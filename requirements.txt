@@ -1,0 +1,12 @@
+# Core dependencies for waprod.py
+twilio==8.10.0
+mysql-connector-python==8.1.0
+python-dotenv==1.0.0
+
+# API server dependencies
+Flask==2.3.3
+Flask-CORS==4.0.0
+requests==2.31.0
+
+# Built-in modules (no installation needed):
+# logging, contextlib, datetime, os, sys, json, time, re, typing, argparse
