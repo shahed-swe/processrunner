@@ -1,0 +1,37 @@
+[OpenAI]
+api_key = YOUR_OPENAI_API_KEY_HERE
+
+[Database]
+host = YOUR_DB_HOST
+user = YOUR_DB_USER
+password = YOUR_DB_PASSWORD
+database = YOUR_DB_NAME
+
+[Email]
+credentials_file = /path/to/credentials_file.txt
+outlook_server = outlook.office365.com
+outlook_port = 587
+
+[EmailTest]
+recipient_email = your_email@example.com
+cc_email = cc_email@example.com
+
+[claude]
+api_key = YOUR_CLAUDE_API_KEY_HERE
+
+[Production]
+server = YOUR_PROD_SERVER
+database = YOUR_PROD_DATABASE
+user = YOUR_PROD_USER
+password = YOUR_PROD_PASSWORD
+allow_user_variables = True
+charset = utf8mb4
+
+[CommunicationTimeframes]
+SendEmail = 0.1
+TextHim = 24
+CallHim = 12
+EscalateToCustomer = 72
+
+[Guidelines]
+text = Respond professionally and courteously. Provide clear and concise information. Escalate issues when necessary.

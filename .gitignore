@@ -1,3 +1,30 @@
-env
+# Virtual environments
+env/
+venv/
 .env
+
+# Configuration files with secrets
 lane/config.ini
+whatsapp/.env
+config.ini
+*.ini
+
+# Log files
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Backup files
+*.bak
+*.tmp
