@@ -1,14 +1,32 @@
 #po_database_operations-fixed.py
 import mysql.connector
 import logging
+import os
 from contextlib import contextmanager
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Database configuration from environment variables
+DB_CONFIG = {
+    'host': os.getenv('DB_HOST', '113.30.189.140'),
+    'database': os.getenv('DB_DATABASE', 'supsol_db'),
+    'user': os.getenv('DB_USER', 'WA'),
+    'password': os.getenv('DB_PASSWORD', 'g&3cX@$tNt*S7@Qs$Q'),
+    'charset': os.getenv('DB_CHARSET', 'utf8mb4'),
+    'connect_timeout': int(os.getenv('DB_CONNECT_TIMEOUT', '10')),
+    'allow_user_variables': os.getenv('DB_ALLOW_USER_VARIABLES', 'False'),
+    'autocommit': True
+}
 
 @contextmanager
-def get_db_connection(db_config):
+def get_db_connection():
+    """Create a database connection using environment variables"""
     connection = None
     try:
-        connection = connect_to_database(db_config)
+        connection = connect_to_database()
         yield connection
     finally:
         if connection:
@@ -18,19 +36,20 @@ def get_db_connection(db_config):
             except mysql.connector.Error as err:
                 logging.error(f"Error closing database connection: {err}")
 
-def connect_to_database(db_config):
+def connect_to_database():
+    """Connect to database using environment variables"""
     logging.info("Connecting to database...")
     connection_params = {
-        'host': db_config.get('host', db_config.get('server', '')),
-        'user': db_config['user'],
-        'password': db_config['password'],
-        'database': db_config['database'],
-        'charset': db_config.get('charset', 'utf8mb4'),
+        'host': DB_CONFIG.get('host'),
+        'user': DB_CONFIG['user'],
+        'password': DB_CONFIG['password'],
+        'database': DB_CONFIG['database'],
+        'charset': DB_CONFIG.get('charset', 'utf8mb4'),
         'use_unicode': True,
         'allow_local_infile': True
     }
     
-    if db_config.get('allow_user_variables', 'False').lower() == 'true':
+    if DB_CONFIG.get('allow_user_variables', 'False').lower() == 'true':
         connection_params['sql_mode'] = 'ALLOW_INVALID_DATES'
         connection_params['init_command'] = "SET sql_mode='ALLOW_INVALID_DATES'"
 

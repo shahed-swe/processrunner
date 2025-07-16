@@ -213,8 +213,8 @@ def main():
             logging.error(f"Database section '{db_section}' not found in configuration")
             return
             
-        logging.info(f"Using database configuration from section: {db_section}")
-        with get_db_connection(dict(config[db_section])) as connection:
+        logging.info(f"Using database configuration from environment variables")
+        with get_db_connection() as connection:
             if not connection:
                 logging.error("Failed to connect to the database. Exiting.")
                 return
