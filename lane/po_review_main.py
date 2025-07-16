@@ -49,10 +49,15 @@ def read_config(config_path):
     config.read(config_path)
     
     # Validate required sections and keys
-    required_sections = ['Production', 'OpenAI', 'CommunicationTimeframes']
+    required_sections = ['OpenAI', 'CommunicationTimeframes']
     for section in required_sections:
         if section not in config:
             raise KeyError(f"Required configuration section '{section}' not found")
+
+    # Check if at least one database section exists
+    db_sections = ['Database', 'Production']
+    if not any(section in config for section in db_sections):
+        raise KeyError("No database configuration section found. Need either 'Database' or 'Production' section")
 
     return config
 
@@ -185,6 +190,8 @@ def main():
                        help='Clean up stuck records before processing')
     parser.add_argument('--text-limit', type=int, default=1500,
                        help='Text limit for GPT responses (default: 1500)')
+    parser.add_argument('--db-section', type=str, default='Database',
+                       help='Database configuration section to use (default: Database)')
     args = parser.parse_args()
 
     try:
@@ -201,7 +208,13 @@ def main():
             logging.info(f"Text limit set to: {text_limit}")
         
         # Connect to database
-        with get_db_connection(dict(config['Production'])) as connection:
+        db_section = args.db_section
+        if db_section not in config:
+            logging.error(f"Database section '{db_section}' not found in configuration")
+            return
+            
+        logging.info(f"Using database configuration from section: {db_section}")
+        with get_db_connection(dict(config[db_section])) as connection:
             if not connection:
                 logging.error("Failed to connect to the database. Exiting.")
                 return
