@@ -47,7 +47,7 @@ def run_whatsapp_script():
         
         # Get current directory
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(current_dir, 'waprod.py')
+        script_path = os.path.join(current_dir, 'waprod2.py')
         
         # Run the script
         cmd = [sys.executable, script_path, '--env', env]
