@@ -1,0 +1,31 @@
+2025-07-16 13:42:28,168 - INFO - Starting PO Review System
+2025-07-16 13:42:28,169 - ERROR - Configuration file error: Configuration file not found at: /path/to/config.ini
+2025-07-16 13:42:28,169 - INFO - PO Review System completed
+2025-07-16 13:44:19,334 - INFO - Starting PO Review System
+2025-07-16 13:44:19,334 - INFO - Reading configuration from: config.ini
+2025-07-16 13:44:19,335 - INFO - Configuration loaded successfully
+2025-07-16 13:44:19,335 - INFO - Using text limit from command line: 1500
+2025-07-16 13:44:19,335 - INFO - Connecting to database...
+2025-07-16 13:44:19,887 - ERROR - Error connecting to database: 1045 (28000): Access denied for user 'supsol_admin'@'118.179.73.97' (using password: YES)
+2025-07-16 13:44:19,887 - ERROR - Failed to connect to the database. Exiting.
+2025-07-16 14:00:27,054 - INFO - Starting PO Review System
+2025-07-16 14:00:27,055 - INFO - Reading configuration from: config.ini
+2025-07-16 14:00:27,055 - INFO - Configuration loaded successfully
+2025-07-16 14:00:27,055 - INFO - Using text limit from command line: 1500
+2025-07-16 14:00:27,055 - INFO - Connecting to database...
+2025-07-16 14:00:27,592 - ERROR - Error connecting to database: 1045 (28000): Access denied for user 'supsol_admin'@'118.179.73.97' (using password: YES)
+2025-07-16 14:00:27,592 - ERROR - Failed to connect to the database. Exiting.
+2025-07-16 14:00:54,693 - INFO - Starting PO Review System
+2025-07-16 14:00:54,694 - INFO - Reading configuration from: config.ini
+2025-07-16 14:00:54,694 - INFO - Configuration loaded successfully
+2025-07-16 14:00:54,694 - INFO - Using text limit from command line: 1500
+2025-07-16 14:00:54,694 - INFO - Connecting to database...
+2025-07-16 14:00:55,219 - ERROR - Error connecting to database: 1045 (28000): Access denied for user 'WA'@'118.179.73.97' (using password: YES)
+2025-07-16 14:00:55,219 - ERROR - Failed to connect to the database. Exiting.
+2025-07-16 14:22:53,633 - INFO - Starting PO Review System
+2025-07-16 14:22:53,635 - INFO - Reading configuration from: /Users/mackbookair/Desktop/codesrunner/lane/config.ini
+2025-07-16 14:22:53,636 - INFO - Configuration loaded successfully
+2025-07-16 14:22:53,636 - INFO - Using text limit from command line: 1500
+2025-07-16 14:22:53,636 - INFO - Connecting to database...
+2025-07-16 14:22:54,199 - ERROR - Error connecting to database: 1045 (28000): Access denied for user 'WA'@'118.179.73.97' (using password: YES)
+2025-07-16 14:22:54,199 - ERROR - Failed to connect to the database. Exiting.
