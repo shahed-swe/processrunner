@@ -17,7 +17,6 @@ from typing import Optional, Dict, List
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
 # Cross-platform file locking
@@ -139,11 +138,13 @@ DB_CONFIG = {
     'host': os.getenv('DB_HOST', '113.30.189.140'),
     'database': os.getenv('DB_DATABASE', 'supsol_db'),
     'user': os.getenv('DB_USER', 'WA'),
-    'password': os.getenv('DB_PASSWORD', 'g&3cX@$tNt*S7@Qs$Q'),
+    'password': os.getenv('DB_PASSWORD', 'g&3cX@$tNt*S7@Qs'),
     'charset': os.getenv('DB_CHARSET', 'utf8mb4'),
     'connect_timeout': int(os.getenv('DB_CONNECT_TIMEOUT', '10')),
     'autocommit': True
 }
+
+
 
 
 class DatabaseError(Exception):
