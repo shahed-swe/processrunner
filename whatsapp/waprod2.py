@@ -17,6 +17,9 @@ from typing import Optional, Dict, List
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
 # Cross-platform file locking
 if os.name == 'posix':  # Linux/Unix
     import fcntl

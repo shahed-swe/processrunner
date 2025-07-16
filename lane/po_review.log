@@ -29,3 +29,14 @@
 2025-07-16 14:22:53,636 - INFO - Connecting to database...
 2025-07-16 14:22:54,199 - ERROR - Error connecting to database: 1045 (28000): Access denied for user 'WA'@'118.179.73.97' (using password: YES)
 2025-07-16 14:22:54,199 - ERROR - Failed to connect to the database. Exiting.
+2025-07-16 15:07:17,053 - INFO - Starting PO Review System
+2025-07-16 15:07:17,055 - ERROR - Configuration file error: Configuration file not found at: /path/to/config.ini
+2025-07-16 15:07:17,055 - INFO - PO Review System completed
+2025-07-16 15:07:31,135 - INFO - Starting PO Review System
+2025-07-16 15:07:31,136 - INFO - Reading configuration from: config.ini
+2025-07-16 15:07:31,137 - INFO - Configuration loaded successfully
+2025-07-16 15:07:31,137 - INFO - Using text limit from command line: 1500
+2025-07-16 15:07:31,137 - INFO - Using database configuration from section: Database
+2025-07-16 15:07:31,137 - INFO - Connecting to database...
+2025-07-16 15:07:31,696 - ERROR - Error connecting to database: 1045 (28000): Access denied for user 'WA'@'118.179.73.97' (using password: YES)
+2025-07-16 15:07:31,696 - ERROR - Failed to connect to the database. Exiting.
