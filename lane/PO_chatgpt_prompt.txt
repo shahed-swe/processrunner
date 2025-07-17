@@ -1,0 +1,162 @@
+Service: {service}
+
+Summary:
+WPQ Number: {wpq_number}
+PO Number: {po_number}
+Current Status: PO Open
+Creation Date: {creation_date}
+Urgency Type: {urgency_type}
+Vendor Status: {vendor_status}
+Vendor Language: {vendor_language}
+
+Line Items:
+{line_items}
+
+Audit Logs:
+{audit_logs}
+
+Email Mail IDs:
+{mail_ids}
+
+Guidelines for determining the next action:
+
+1. Interpret the summary:
+   - Pay attention to the current status of the purchase order approval process
+   - Note any deadlines or important dates mentioned
+   - Consider the history of previous communications
+
+2. Escalation process:
+   - Start with email communication (AuditTypeID: 100)
+   - If no response after two emails and the configured time frame has passed, escalate to WhatsApp (AuditTypeID: 300)
+   - If no response after WhatsApp and the configured time frame has passed, escalate to phone call (AuditTypeID: 200)
+   - If no response after phone call and the configured time frame has passed, escalate to supporter via email (AuditTypeID: 400)
+
+3. Choosing the audit type ID:
+   - Use 700 (Requesting_PO_Approval__Send_Email) for initial contact or follow-ups
+   - Use 900 (Requesting_PO_Approval__Text_Him) if email follow-ups have been unsuccessful
+   - Use 800 (Requesting_PO_Approval__Call_Him) if WhatsApp has been unsuccessful
+   - Use 1200 (Requesting_PO_Approval__Escalate_To_Customer) if all previous methods have been unsuccessful
+   - Use 1100 (Requesting_PO_Approval__Vendor_Response) only when logging a response received from the vendor
+
+4. Business rules:
+   - Always prioritize getting the vendor's confirmation on each item in the purchase order
+   - Use the vendor's preferred language for communication when available
+   - Reset the escalation process if a vendor response is received
+
+5. Crafting the response:
+   - Subject: Should be clear and action-oriented, focusing on PO approval
+   - Text: Use polite but firm language, clearly state the required action (PO approval) and any deadlines
+   - EnglishText: Provide an accurate translation if the text is in another language
+   - If replying to a specific email, include the corresponding Mail ID in your response
+   - Include the vendor portal link: https://vendors.supsol-scm.com/vendor/login
+   - Format the response using HTML tags for structure and readability
+   - Use <br> tags for line breaks after each sentence or logical break in the content
+   - Use <p> tags for paragraph breaks
+   - Answer any questions present in the audit logs
+   - Communicate directly to the vendor without additional instructions
+   - Wrap the entire content in an HTML div tag with appropriate direction attribute:
+     * For left-to-right languages: <div dir="ltr">content here</div>
+     * For right-to-left languages: <div dir="rtl">content here</div>
+
+6. Timeframes:
+   [Keep this section as is]
+
+7. Handling Mail IDs:
+   [Keep this section as is]
+
+8. Cultural and Language Adaptation:
+   [Keep this section as is]
+
+9. Handling Vendor Responses:
+   - When processing audit logs, be aware that some entries may be vendor responses or questions
+   - Answer vendor questions based ONLY on the information provided in the summary, line items, and audit logs
+   - Do not add any information from external sources or your own knowledge
+   - If you cannot answer a question based on the provided information, either:
+     a) Ask for clarification if more details are needed to answer the question
+     b) Escalate to the supporter using code 1200 (Requesting_PO_Approval__Escalate_To_Customer) if the question is beyond the scope of the provided information
+
+10. Item Table Formatting:
+    [Keep this section as is]
+
+11. Email Drafting:
+    - Draft the response as a professional email in the vendor's language
+    - Ensure the email includes:
+      * A proper greeting
+      * Clear request for approval of the purchase order
+      * Emphasis on confirming each item's details (part, date, cost, quantity)
+      * The item table as described above
+      * Instructions for the vendor to reply with comments or concerns
+      * A brief mention of the importance of vendor setup (if not already completed)
+      * A polite closing
+      * Any necessary contact information or next steps
+      * Please limit your response text and English text to a maximum of {text_limit} characters each.
+
+Based on the provided service ({service}), summary, and guidelines, analyze the situation and determine the appropriate next action. Choose the most suitable audit type ID from the following valid values:
+- Requesting_PO_Approval__Send_Email: 700
+- Requesting_PO_Approval__Call_Him: 800
+- Requesting_PO_Approval__Text_Him: 900
+- Requesting_PO_Approval__Escalate_To_Customer: 1200
+- Requesting_PO_Approval__Vendor_Response: 1100
+
+Your response MUST be in the following JSON format:
+{{
+    "wpqNumber": {wpq_number},
+    "auditTypeID": <appropriate audit type ID from the valid values listed above>,
+    "executionStatus": 0,
+    "actionStatus": "New",
+    "category": "<Vendor Setup>",
+    "service": "<Portal/Call/WhatsApp/Mail>",
+    "subject": "Brief subject line",
+    "text": "Action details in vendor's preferred language, formatted with HTML tags including line breaks and item table",
+    "englishText": "Action details in English, formatted with HTML tags including line breaks and item table",
+    "_MailID": "<Mail ID if responding to a specific email, otherwise leave empty>"
+}}
+
+Note: The actionStatus should always be "New" for these actions as they represent new steps in the process.
+
+Remember to adjust the chosen action based on the urgency of the situation and the history of communications. If you are responding to a specific email, make sure to include the appropriate Mail ID in your response.
+Ensure that your response includes:
+1. The vendor portal link: https://vendors.supsol-scm.com/vendor/login
+2. Proper HTML formatting for an official and respectful email, including <br> tags for line breaks and <p> tags for paragraphs
+3. The item table formatted in HTML
+4. Answers to any questions found in the audit logs, based only on provided information
+5. Direct communication to the vendor without additional instructions
+6. Appropriate HTML div tag with dir attribute for text direction
+
+
+Example of well-formatted text with HTML tags (for English):
+
+<div dir="ltr">
+<p>Hello,<br><br>
+We are writing to request your approval for the following purchase order.<br>
+Please review the details carefully and confirm your acceptance of each item.<br><br>
+Here are the details of your Purchase Order:<br><br>
+<table border="1">
+  <tr>
+    <th>Item</th>
+    <th>Description</th>
+    <th>Requested Date</th>
+    <th>Cost</th>
+    <th>Quantity</th>
+    <th>PO Number</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Example Item</td>
+    <td>2023-08-15</td>
+    <td>$100.00</td>
+    <td>2</td>
+    <td>PO12345</td>
+    <td></td>
+  </tr>
+</table>
+<br>
+Please reply to this email with your confirmation or any comments regarding the items, dates, costs, or quantities.<br>
+If you have any concerns, please let us know, and we'll address them promptly.<br><br>
+Additionally, if you haven't completed your vendor setup, please do so at your earliest convenience:<br>
+<a href="https://vendors.supsol-scm.com/vendor/login">https://vendors.supsol-scm.com/vendor/login</a><br><br>
+We look forward to your prompt response and approval of this purchase order.<br><br>
+Thank you,<br>
+SupSol Procurement Team</p>
+</div>
