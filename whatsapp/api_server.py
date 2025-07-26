@@ -199,6 +199,286 @@ def run_po_review():
             'timestamp': datetime.now().isoformat()
         }), 500
 
+@app.route('/api/run-poprocess', methods=['GET', 'POST'])
+def run_poprocess_pipeline():
+    """Run all poprocess scripts in sequence"""
+    try:
+        logger.info("API request: Running PO process pipeline")
+        
+        # Get poprocess directory (sibling to whatsapp)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        poprocess_dir = os.path.join(parent_dir, 'poprocess')
+        
+        # Check if poprocess directory exists
+        if not os.path.exists(poprocess_dir):
+            return jsonify({
+                'success': False,
+                'error': f'Poprocess directory not found at: {poprocess_dir}',
+                'timestamp': datetime.now().isoformat()
+            }), 404
+        
+        # Define scripts to run in order
+        scripts = [
+            'saveattacment.py',
+            'converttopdf.py', 
+            'ai_classification_linux.py',
+            'APIProcessingPO_linux.py',
+            'send_file-linux.py'
+        ]
+        
+        # Verify all scripts exist
+        for script in scripts:
+            script_path = os.path.join(poprocess_dir, script)
+            if not os.path.exists(script_path):
+                return jsonify({
+                    'success': False,
+                    'error': f'Script not found: {script_path}',
+                    'timestamp': datetime.now().isoformat()
+                }), 404
+        
+        # Execute scripts sequentially
+        results = []
+        overall_success = True
+        combined_stdout = ""
+        combined_stderr = ""
+        
+        # Change to poprocess directory for execution
+        original_cwd = os.getcwd()
+        
+        try:
+            os.chdir(poprocess_dir)
+            
+            for i, script in enumerate(scripts, 1):
+                script_path = os.path.join(poprocess_dir, script)
+                
+                logger.info(f"Executing step {i}/5: {script}")
+                combined_stdout += f"\n{'='*60}\n"
+                combined_stdout += f"STEP {i}/5: Executing {script}\n"
+                combined_stdout += f"{'='*60}\n"
+                
+                try:
+                    # Run the script with extended timeout
+                    cmd = [sys.executable, script]
+                    result = subprocess.run(
+                        cmd,
+                        capture_output=True,
+                        text=True,
+                        timeout=1800  # 30 minutes timeout per script
+                    )
+                    
+                    # Store individual result
+                    script_success = result.returncode == 0
+                    script_result = {
+                        'step': i,
+                        'script': script,
+                        'success': script_success,
+                        'return_code': result.returncode,
+                        'stdout': result.stdout,
+                        'stderr': result.stderr,
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    results.append(script_result)
+                    
+                    # Add to combined output
+                    combined_stdout += f"Return Code: {result.returncode}\n"
+                    if result.stdout:
+                        combined_stdout += f"STDOUT:\n{result.stdout}\n"
+                    if result.stderr:
+                        combined_stderr += f"STEP {i} - {script} STDERR:\n{result.stderr}\n"
+                    
+                    logger.info(f"Step {i} completed: {script} (return code: {result.returncode})")
+                    
+                    # If script failed, update overall success but continue with remaining scripts
+                    if not script_success:
+                        overall_success = False
+                        logger.warning(f"Step {i} failed: {script}")
+                        combined_stdout += f"⚠️  WARNING: {script} failed with return code {result.returncode}\n"
+                        # Continue to next script instead of breaking
+                    else:
+                        combined_stdout += f"✅ SUCCESS: {script} completed successfully\n"
+                    
+                except subprocess.TimeoutExpired:
+                    error_msg = f"Script {script} timed out (30 minutes)"
+                    logger.error(error_msg)
+                    
+                    script_result = {
+                        'step': i,
+                        'script': script,
+                        'success': False,
+                        'return_code': -1,
+                        'stdout': '',
+                        'stderr': error_msg,
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    results.append(script_result)
+                    
+                    overall_success = False
+                    combined_stdout += f"❌ TIMEOUT: {script} timed out after 30 minutes\n"
+                    combined_stderr += f"STEP {i} - {script} TIMEOUT: {error_msg}\n"
+                    
+                    # Continue to next script
+                    continue
+                    
+                except Exception as e:
+                    error_msg = f"Error executing {script}: {str(e)}"
+                    logger.error(error_msg)
+                    
+                    script_result = {
+                        'step': i,
+                        'script': script,
+                        'success': False,
+                        'return_code': -1,
+                        'stdout': '',
+                        'stderr': error_msg,
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    results.append(script_result)
+                    
+                    overall_success = False
+                    combined_stdout += f"❌ ERROR: {script} failed with error: {str(e)}\n"
+                    combined_stderr += f"STEP {i} - {script} ERROR: {error_msg}\n"
+                    
+                    # Continue to next script
+                    continue
+        
+        finally:
+            os.chdir(original_cwd)
+        
+        # Add summary to combined output
+        combined_stdout += f"\n{'='*60}\n"
+        combined_stdout += f"PIPELINE EXECUTION SUMMARY\n"
+        combined_stdout += f"{'='*60}\n"
+        successful_steps = sum(1 for r in results if r['success'])
+        combined_stdout += f"Total Steps: {len(scripts)}\n"
+        combined_stdout += f"Successful: {successful_steps}\n"
+        combined_stdout += f"Failed: {len(scripts) - successful_steps}\n"
+        combined_stdout += f"Overall Status: {'SUCCESS' if overall_success else 'PARTIAL/FAILED'}\n"
+        
+        for result in results:
+            status = "✅ SUCCESS" if result['success'] else "❌ FAILED"
+            combined_stdout += f"  Step {result['step']}: {result['script']} - {status}\n"
+        
+        logger.info(f"PO process pipeline completed. Overall success: {overall_success}")
+        logger.info(f"Successful steps: {successful_steps}/{len(scripts)}")
+        
+        return jsonify({
+            'success': overall_success,
+            'message': 'PO process pipeline executed',
+            'summary': {
+                'total_steps': len(scripts),
+                'successful_steps': successful_steps,
+                'failed_steps': len(scripts) - successful_steps,
+                'scripts_executed': scripts
+            },
+            'results': results,
+            'combined_stdout': combined_stdout,
+            'combined_stderr': combined_stderr,
+            'timestamp': datetime.now().isoformat()
+        }), 200 if overall_success else 207  # 207 = Multi-Status (partial success)
+        
+    except Exception as e:
+        logger.error(f"Error running PO process pipeline: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
+
+@app.route('/api/run-mailsend', methods=['GET', 'POST'])
+def run_mailsend_script():
+    """Run the main_mail_send_linux.py script from mailsend folder"""
+    try:
+        # Get parameters from query string or JSON body
+        if request.method == 'POST':
+            data = request.get_json() or {}
+            env = data.get('env', 'prod')
+            test = data.get('test', False)
+        else:
+            env = request.args.get('env', 'prod')
+            test_param = request.args.get('test', 'false').lower()
+            test = test_param in ['true', '1', 'yes', 'y']
+        
+        logger.info(f"API request: Running mailsend script with env={env}, test={test}")
+        
+        # Get mailsend directory (sibling to whatsapp)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        mailsend_dir = os.path.join(parent_dir, 'mailsend')
+        script_path = os.path.join(mailsend_dir, 'main_mail_send_linux.py')
+        
+        # Check if mailsend directory and script exist
+        if not os.path.exists(mailsend_dir):
+            return jsonify({
+                'success': False,
+                'error': f'Mailsend directory not found at: {mailsend_dir}',
+                'timestamp': datetime.now().isoformat()
+            }), 404
+            
+        if not os.path.exists(script_path):
+            return jsonify({
+                'success': False,
+                'error': f'Mailsend script not found at: {script_path}',
+                'timestamp': datetime.now().isoformat()
+            }), 404
+        
+        # Prepare input responses: environment choice (1=prod, 2=dev) and test mode (y/n)
+        env_choice = "1" if env == 'prod' else "2"
+        test_choice = "y" if test else "n"
+        input_responses = f"{env_choice}\n{test_choice}\n"
+        
+        # Build command with virtual environment activation
+        env_activate_path = os.path.join(parent_dir, 'env', 'bin', 'activate')
+        cmd = ['bash', '-c', f'source {env_activate_path} && cd {mailsend_dir} && python3 main_mail_send_linux.py']
+        logger.info(f"Executing mailsend command: {' '.join(cmd)}")
+        
+        # Change to mailsend directory for execution
+        original_cwd = os.getcwd()
+        os.chdir(mailsend_dir)
+        
+        try:
+            result = subprocess.run(
+                cmd,
+                input=input_responses,
+                capture_output=True,
+                text=True,
+                timeout=1800  # 30 minutes timeout
+            )
+        finally:
+            os.chdir(original_cwd)
+        
+        success = result.returncode == 0
+        logger.info(f"Mailsend script execution completed. Return code: {result.returncode}")
+        
+        return jsonify({
+            'success': success,
+            'message': 'Mailsend script executed',
+            'parameters': {
+                'env': env,
+                'test': test
+            },
+            'return_code': result.returncode,
+            'stdout': result.stdout,
+            'stderr': result.stderr,
+            'timestamp': datetime.now().isoformat()
+        }), 200 if success else 500
+        
+    except subprocess.TimeoutExpired:
+        logger.error("Mailsend script execution timed out")
+        return jsonify({
+            'success': False,
+            'error': 'Mailsend script execution timed out (30 minutes)',
+            'timestamp': datetime.now().isoformat()
+        }), 408
+        
+    except Exception as e:
+        logger.error(f"Error running mailsend script: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
+
 @app.route('/api/po-status', methods=['GET'])
 def get_po_status():
     """Get status of PO processing"""
@@ -306,6 +586,8 @@ if __name__ == '__main__':
     logger.info("  GET  /api/run-po-review?wpq=XXX&cleanup=true&text_limit=1500 - Run PO review")
     logger.info("  POST /api/run-po-review - Run PO review with JSON body")
     logger.info("  GET  /api/po-status?wpq=XXX - Check PO status")
+    logger.info("  GET/POST /api/run-poprocess - Run complete PO process pipeline (5 scripts)")
+    logger.info("  GET/POST /api/run-mailsend?env=prod&test=true - Run mailsend script")
     logger.info("  POST /api/po-cleanup - Clean up stuck PO records")
     
     app.run(

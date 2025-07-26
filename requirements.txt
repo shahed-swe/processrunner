@@ -8,5 +8,14 @@ Flask==2.3.3
 Flask-CORS==4.0.0
 requests==2.31.0
 
+# Dependencies for poprocess folder
+openai==1.51.2
+PyMuPDF==1.24.11
+langdetect==1.0.9
+pdfminer.six==20231228
+Pillow==10.4.0
+pytesseract==0.3.13
+deep-translator==1.11.4
+
 # Built-in modules (no installation needed):
-# logging, contextlib, datetime, os, sys, json, time, re, typing, argparse
+# logging, contextlib, datetime, os, sys, json, time, re, typing, argparse, configparser, imaplib, email, smtplib, mimetypes, pathlib
