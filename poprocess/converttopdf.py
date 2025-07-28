@@ -55,11 +55,11 @@ def print_and_log(message):
     print(message)
 
 def get_attachments_for_processing(connection):
-    """Get attachments that need processing (updated for composite key)"""
+    """Get PDF attachments that need processing (updated for composite key)"""
     try:
         cursor = connection.cursor(dictionary=True)
         
-        # Get attachments where PDF was extracted but not yet processed
+        # Get only PDF attachments where PDF was extracted but not yet processed
         query = """
         SELECT email_id, attachment_sequence, original_file_name, original_file_path, file_type, 
                retry_count, attachment_count, po_attachments_found, subject
@@ -68,6 +68,7 @@ def get_attachments_for_processing(connection):
           AND text_converted = 'N' 
           AND email_sent = 'N'
           AND retry_count < 3
+          AND file_type = 'PDF'
           AND original_file_path IS NOT NULL
         ORDER BY email_id, attachment_sequence ASC
         """
@@ -76,7 +77,7 @@ def get_attachments_for_processing(connection):
         attachments = cursor.fetchall()
         cursor.close()
         
-        print(f"Found {len(attachments)} attachments ready for processing")
+        print(f"Found {len(attachments)} PDF attachments ready for processing")
         return attachments
         
     except Error as e:
@@ -93,6 +94,10 @@ def update_attachment_status(connection, email_id, attachment_sequence, **kwargs
         
         # Add any status updates passed as keyword arguments
         for key, value in kwargs.items():
+            # Truncate string values that might be too long for database columns
+            if isinstance(value, str) and key in ['error_message', 'text_converted']:
+                if len(value) > 500:  # Limit to 500 characters for safety
+                    value = value[:497] + "..."
             updates.append(f"{key} = %s")
             values.append(value)
             
@@ -137,13 +142,17 @@ def skip_to_email_notification(connection, email_id, attachment_sequence, reason
     try:
         print(f"Skipping {file_name} to email notification: {reason}")
         
+        # Truncate reason to prevent database errors (limit to 200 characters)
+        truncated_reason = reason[:200] if len(reason) > 200 else reason
+        
         # Update status to skip AI processing and mark ready for email
+        # Use 'N' for text_converted since this is not a PDF that can be converted
         update_attachment_status(connection, email_id, attachment_sequence,
-                                text_converted='SKIPPED',
-                                ai_classified='SKIPPED', 
-                                api_loaded='SKIPPED',
+                                text_converted='N',
+                                ai_classified='N', 
+                                api_loaded='N',
                                 current_step='email_notification',
-                                error_message=f"Non-PDF file: {reason}",
+                                error_message=f"Non-PDF: {truncated_reason}",
                                 error_step='file_type_check')
         
         return True
@@ -318,14 +327,21 @@ def translate_text_to_english(text):
     """Translate text to English"""
     try:
         if text:
-            translated_text = GoogleTranslator(source='he', target='en').translate(text)
+            # Use 'iw' for Hebrew as supported by deep_translator, not 'he'
+            translated_text = GoogleTranslator(source='iw', target='en').translate(text)
             return translated_text
         else:
             print("Input text is empty or None.")
             return ""
     except Exception as e:
         print(f"Error translating text: {e}")
-        return ""
+        # If Hebrew translation fails, try auto-detect or return original text
+        try:
+            translated_text = GoogleTranslator(source='auto', target='en').translate(text)
+            return translated_text
+        except:
+            print("Auto-detect translation also failed, returning original text")
+            return text
 
 def process_pdf_with_intelligence(pdf_path, output_folder, connection, email_id, attachment_sequence):
     """
@@ -423,17 +439,17 @@ def create_unique_translated_filename(original_filename, attachment_sequence):
         return f"attachment_{attachment_sequence}_translated.txt"
 
 def process_attachments(connection):
-    """Process attachments - PDFs only, skip others to email notification"""
+    """Process PDF attachments only - skip all other file types"""
     # Ensure folders exist
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
     os.makedirs(PROCESSED_FOLDER, exist_ok=True)
     os.makedirs(NON_PDF_FOLDER, exist_ok=True)
 
-    # Get attachments that need processing
+    # Get PDF attachments that need processing
     attachments_to_process = get_attachments_for_processing(connection)
     
     if not attachments_to_process:
-        print("No attachments found that need processing.")
+        print("No PDF attachments found that need processing.")
         return
 
     for attachment_record in attachments_to_process:
@@ -451,6 +467,16 @@ def process_attachments(connection):
         print(f"File type: {file_type}, Total attachments: {attachment_count}, PO attachments: {po_attachments_found}")
         
         try:
+            # Check file type first - skip non-PDF files immediately
+            if file_type != 'PDF':
+                print(f"Skipping non-PDF file: {original_file_name} (Type: {file_type})")
+                
+                # Skip to email notification step without moving file
+                skip_to_email_notification(connection, email_id, attachment_sequence,
+                                          f"File type {file_type} is not supported for processing", 
+                                          original_file_name)
+                continue
+            
             # Check if file exists
             if not os.path.exists(original_file_path):
                 print(f"File not found: {original_file_path}")
@@ -460,20 +486,14 @@ def process_attachments(connection):
                                         retry_count=attachment_record['retry_count'] + 1)
                 continue
             
-            # Check if this is a PDF file
+            # Double-check if this is actually a PDF file by reading header
             if not is_pdf_file(original_file_path, file_type):
-                print(f"Non-PDF file detected: {original_file_name} (Type: {file_type})")
-                
-                # Move non-PDF file to separate folder
-                new_path = move_non_pdf_file(original_file_path, original_file_name)
+                print(f"File is not a valid PDF: {original_file_name}")
                 
                 # Skip to email notification step
                 skip_to_email_notification(connection, email_id, attachment_sequence,
-                                          f"File type {file_type} is not supported for processing", 
+                                          f"File {original_file_name} is not a valid PDF", 
                                           original_file_name)
-                
-                # Update file path
-                update_attachment_status(connection, email_id, attachment_sequence, original_file_path=new_path)
                 continue
             
             # Handle multiple attachments - inform that processing this specific PDF

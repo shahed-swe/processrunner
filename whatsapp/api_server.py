@@ -243,6 +243,9 @@ def run_poprocess_pipeline():
         combined_stdout = ""
         combined_stderr = ""
         
+        # Get virtual environment path
+        env_activate_path = os.path.join(parent_dir, 'env', 'bin', 'activate')
+        
         # Change to poprocess directory for execution
         original_cwd = os.getcwd()
         
@@ -258,8 +261,8 @@ def run_poprocess_pipeline():
                 combined_stdout += f"{'='*60}\n"
                 
                 try:
-                    # Run the script with extended timeout
-                    cmd = [sys.executable, script]
+                    # Run the script with virtual environment activation
+                    cmd = ['bash', '-c', f'source {env_activate_path} && cd {poprocess_dir} && python {script}']
                     result = subprocess.run(
                         cmd,
                         capture_output=True,

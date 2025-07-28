@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# main_mail_send_linux.py
+# main_mail_send_graph.py
 
 import sys
 import os
@@ -10,9 +10,7 @@ from mysql.connector import Error
 from datetime import datetime
 from typing import Optional, Dict, List
 import logging
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from email_handler_linux import send_email
 
 def setup_logging():
     """Setup logging configuration"""
@@ -48,7 +46,7 @@ def read_config(config_path: str) -> configparser.ConfigParser:
     config = configparser.ConfigParser()
     config.read(config_path)
     
-    required_sections = ['Database', 'Production', 'Email', 'EmailTest']
+    required_sections = ['Database', 'Production', 'GraphAPI', 'EmailTest']
     for section in required_sections:
         if section not in config:
             raise ValueError(f"Missing required section: {section}")
@@ -90,7 +88,7 @@ def connect_to_database(config_section) -> Optional[DatabaseManager]:
     """Connect to database"""
     try:
         connection = mysql.connector.connect(
-            host=config_section['server'],
+            host=config_section.get('host', config_section.get('server')),
             database=config_section['database'],
             user=config_section['user'],
             password=config_section['password'],
@@ -108,115 +106,6 @@ def close_database_connection(db_manager: DatabaseManager):
     """Close database connection"""
     if db_manager:
         db_manager.close()
-
-def get_credentials(file_path: str) -> tuple:
-    """Read email credentials from file"""
-    try:
-        with open(file_path, 'r') as file:
-            email_addr = file.readline().strip()
-            password = file.readline().strip()
-        return email_addr, password
-    except Exception as e:
-        log_error(logging.getLogger(__name__), f"Error reading credentials: {e}")
-        return None, None
-
-def send_email(config: configparser.ConfigParser, wpq: Dict, audit: Dict, is_test: bool) -> bool:
-    """Send email notification"""
-    logger = logging.getLogger(__name__)
-    
-    try:
-        # Get email credentials
-        credentials_file = config['Email']['credentials_file']
-        sender_email, sender_password = get_credentials(credentials_file)
-        
-        if not sender_email or not sender_password:
-            log_error(logger, "Failed to get email credentials")
-            return False
-        
-        # Determine recipient
-        if is_test:
-            recipient = config['EmailTest']['recipient_email']
-            cc_recipient = config['EmailTest'].get('cc_email', '')
-        else:
-            # Use supporter email if available, otherwise vendor email
-            recipient = wpq.get('SupporterEmail') or wpq.get('VendorEmail') or wpq.get('TempVendorEmail')
-            cc_recipient = ''
-        
-        if not recipient:
-            log_error(logger, f"No recipient email found for WPQ: {wpq['WPQNumber']}")
-            return False
-        
-        # Create email message
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['To'] = recipient
-        if cc_recipient:
-            msg['Cc'] = cc_recipient
-        
-        # Email subject based on audit type
-        audit_type_subjects = {
-            100: f"WPQ {wpq['WPQNumber']} - New Service Call Created",
-            700: f"WPQ {wpq['WPQNumber']} - Quote Request",
-            800: f"WPQ {wpq['WPQNumber']} - Purchase Order Created", 
-            900: f"WPQ {wpq['WPQNumber']} - Service Update",
-            1200: f"WPQ {wpq['WPQNumber']} - Delivery Confirmation Required",
-            1300: f"WPQ {wpq['WPQNumber']} - Invoice Submitted",
-            1900: f"WPQ {wpq['WPQNumber']} - Service Completed"
-        }
-        
-        msg['Subject'] = audit_type_subjects.get(audit['AuditTypeID'], f"WPQ {wpq['WPQNumber']} - Service Notification")
-        
-        # Email body
-        vendor_name = wpq.get('VendorName') or wpq.get('TempVendorName', 'Vendor')
-        supporter_name = wpq.get('SupporterName', 'Support Team')
-        
-        email_body = f"""
-Dear {vendor_name},
-
-WPQ Number: {wpq['WPQNumber']}
-PO Number: {wpq.get('PONumber', 'N/A')}
-Creation Date: {wpq['CreationDate']}
-Urgency: {wpq.get('UrgencyType', 'Standard')}
-Supporter: {supporter_name}
-
-Message:
-{audit.get('EnglishText') or audit.get('Text', 'No message content')}
-
-Please respond promptly to this service call.
-
-This is an automated notification from the SupSol system.
-
-Best regards,
-SupSol Support Team
-"""
-        
-        if is_test:
-            email_body = f"[TEST MODE]\n\n{email_body}"
-        
-        msg.attach(MIMEText(email_body, 'plain'))
-        
-        # Send email via SMTP
-        smtp_server = config['Email'].get('smtp_server', 'smtp.office365.com')
-        smtp_port = config['Email'].getint('smtp_port', 587)
-        
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-        server.login(sender_email, sender_password)
-        
-        recipients = [recipient]
-        if cc_recipient:
-            recipients.append(cc_recipient)
-        
-        text = msg.as_string()
-        server.sendmail(sender_email, recipients, text)
-        server.quit()
-        
-        log_info(logger, f"Email sent successfully to {recipient} for WPQ: {wpq['WPQNumber']}, Audit: {audit['ID']}")
-        return True
-        
-    except Exception as e:
-        log_error(logger, f"Error sending email: {e}")
-        return False
 
 def get_environment() -> str:
     """Get user's choice of environment"""
@@ -310,7 +199,7 @@ def update_audit_status(db_manager: DatabaseManager, audit_id: int) -> bool:
 def main():
     """Main function to process WPQs and send emails"""
     logger = setup_logging()
-    log_info(logger, "Starting WPQ processor (Linux)")
+    log_info(logger, "Starting WPQ processor with Graph API")
     
     try:
         # Load configuration - look in same directory as script
@@ -362,7 +251,7 @@ def main():
                         # Process each audit log
                         for audit in audits:
                             try:
-                                # Send email
+                                # Send email using imported function
                                 if send_email(config, wpq, audit, is_test):
                                     # Update audit status
                                     if update_audit_status(db_manager, audit['ID']):

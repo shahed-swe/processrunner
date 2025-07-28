@@ -4212,3 +4212,599 @@ Processing PO: PO25000461 (WPQ: 103256)
 2025-07-25 14:25:03,510 - INFO - Processing complete. Processed: 0, Skipped: 13, Errors: 0
 2025-07-25 14:25:03,510 - INFO - Database connection closed.
 2025-07-25 14:25:03,510 - INFO - PO Review System completed
+2025-07-26 14:25:08,964 - INFO - Starting PO Review System
+2025-07-26 14:25:08,965 - INFO - Reading configuration from: /root/processrunner/lane/config.ini
+2025-07-26 14:25:08,965 - INFO - Configuration loaded successfully
+2025-07-26 14:25:08,965 - INFO - Using text limit from command line: 1500
+2025-07-26 14:25:08,965 - INFO - Using database configuration from environment variables
+2025-07-26 14:25:08,965 - INFO - Connecting to database...
+2025-07-26 14:25:08,971 - INFO - Successfully connected to database
+2025-07-26 14:25:08,971 - INFO - Processing all available open POs
+2025-07-26 14:25:08,972 - INFO - Fetching open POs with CallStatus 100 and ProcessingStatus 0
+2025-07-26 14:25:09,002 - INFO - Successfully fetched 12 available open POs
+2025-07-26 14:25:09,002 - INFO - 
+Processing PO: PO24000734 (WPQ: 102561)
+2025-07-26 14:25:09,002 - INFO - Marking WPQ 102561 as in process
+2025-07-26 14:25:09,007 - INFO - Successfully marked WPQ 102561 as in process
+2025-07-26 14:25:09,007 - INFO - Fetching line items for WPQ: 102561
+2025-07-26 14:25:09,021 - INFO - Successfully fetched 1 line items for WPQ 102561
+2025-07-26 14:25:09,021 - INFO - Fetching audit logs for WPQ: 102561
+2025-07-26 14:25:09,032 - INFO - Successfully fetched 8 audit logs for WPQ 102561
+2025-07-26 14:25:09,033 - INFO - Time since last action: 2 days, 5:59:15.033112, Should process: False
+2025-07-26 14:25:09,033 - INFO - Skipping PO PO24000734 - recent communication exists
+2025-07-26 14:25:09,033 - INFO - Releasing WPQ 102561
+2025-07-26 14:25:09,035 - INFO - Successfully released WPQ 102561
+2025-07-26 14:25:09,035 - INFO - 
+Processing PO: PO25000072 (WPQ: 102842)
+2025-07-26 14:25:09,035 - INFO - Marking WPQ 102842 as in process
+2025-07-26 14:25:09,037 - INFO - Successfully marked WPQ 102842 as in process
+2025-07-26 14:25:09,037 - INFO - Fetching line items for WPQ: 102842
+2025-07-26 14:25:09,041 - INFO - Successfully fetched 1 line items for WPQ 102842
+2025-07-26 14:25:09,041 - INFO - Fetching audit logs for WPQ: 102842
+2025-07-26 14:25:09,044 - INFO - Successfully fetched 8 audit logs for WPQ 102842
+2025-07-26 14:25:09,044 - INFO - Time since last action: 2 days, 5:58:49.044209, Should process: False
+2025-07-26 14:25:09,044 - INFO - Skipping PO PO25000072 - recent communication exists
+2025-07-26 14:25:09,044 - INFO - Releasing WPQ 102842
+2025-07-26 14:25:09,046 - INFO - Successfully released WPQ 102842
+2025-07-26 14:25:09,046 - INFO - 
+Processing PO: PO25000117 (WPQ: 102888)
+2025-07-26 14:25:09,046 - INFO - Marking WPQ 102888 as in process
+2025-07-26 14:25:09,048 - INFO - Successfully marked WPQ 102888 as in process
+2025-07-26 14:25:09,048 - INFO - Fetching line items for WPQ: 102888
+2025-07-26 14:25:09,052 - INFO - Successfully fetched 1 line items for WPQ 102888
+2025-07-26 14:25:09,052 - INFO - Fetching audit logs for WPQ: 102888
+2025-07-26 14:25:09,054 - INFO - Successfully fetched 4 audit logs for WPQ 102888
+2025-07-26 14:25:09,054 - INFO - Time since last action: 2 days, 5:58:03.054339, Should process: False
+2025-07-26 14:25:09,054 - INFO - Skipping PO PO25000117 - recent communication exists
+2025-07-26 14:25:09,054 - INFO - Releasing WPQ 102888
+2025-07-26 14:25:09,056 - INFO - Successfully released WPQ 102888
+2025-07-26 14:25:09,056 - INFO - 
+Processing PO: PO25000181 (WPQ: 102972)
+2025-07-26 14:25:09,057 - INFO - Marking WPQ 102972 as in process
+2025-07-26 14:25:09,059 - INFO - Successfully marked WPQ 102972 as in process
+2025-07-26 14:25:09,059 - INFO - Fetching line items for WPQ: 102972
+2025-07-26 14:25:09,063 - INFO - Successfully fetched 1 line items for WPQ 102972
+2025-07-26 14:25:09,063 - INFO - Fetching audit logs for WPQ: 102972
+2025-07-26 14:25:09,065 - INFO - Successfully fetched 3 audit logs for WPQ 102972
+2025-07-26 14:25:09,065 - INFO - Time since last action: 2 days, 5:57:25.065268, Should process: False
+2025-07-26 14:25:09,065 - INFO - Skipping PO PO25000181 - recent communication exists
+2025-07-26 14:25:09,065 - INFO - Releasing WPQ 102972
+2025-07-26 14:25:09,067 - INFO - Successfully released WPQ 102972
+2025-07-26 14:25:09,067 - INFO - 
+Processing PO: PO25000251 (WPQ: 103026)
+2025-07-26 14:25:09,067 - INFO - Marking WPQ 103026 as in process
+2025-07-26 14:25:09,069 - INFO - Successfully marked WPQ 103026 as in process
+2025-07-26 14:25:09,070 - INFO - Fetching line items for WPQ: 103026
+2025-07-26 14:25:09,074 - INFO - Successfully fetched 2 line items for WPQ 103026
+2025-07-26 14:25:09,074 - INFO - Fetching audit logs for WPQ: 103026
+2025-07-26 14:25:09,076 - INFO - Successfully fetched 3 audit logs for WPQ 103026
+2025-07-26 14:25:09,076 - INFO - Time since last action: 2 days, 5:56:56.076305, Should process: False
+2025-07-26 14:25:09,076 - INFO - Skipping PO PO25000251 - recent communication exists
+2025-07-26 14:25:09,076 - INFO - Releasing WPQ 103026
+2025-07-26 14:25:09,078 - INFO - Successfully released WPQ 103026
+2025-07-26 14:25:09,078 - INFO - 
+Processing PO: PO25000279 (WPQ: 103067)
+2025-07-26 14:25:09,078 - INFO - Marking WPQ 103067 as in process
+2025-07-26 14:25:09,081 - INFO - Successfully marked WPQ 103067 as in process
+2025-07-26 14:25:09,081 - INFO - Fetching line items for WPQ: 103067
+2025-07-26 14:25:09,085 - INFO - Successfully fetched 1 line items for WPQ 103067
+2025-07-26 14:25:09,085 - INFO - Fetching audit logs for WPQ: 103067
+2025-07-26 14:25:09,087 - INFO - Successfully fetched 4 audit logs for WPQ 103067
+2025-07-26 14:25:09,088 - INFO - Time since last action: 2 days, 5:56:01.087924, Should process: False
+2025-07-26 14:25:09,088 - INFO - Skipping PO PO25000279 - recent communication exists
+2025-07-26 14:25:09,088 - INFO - Releasing WPQ 103067
+2025-07-26 14:25:09,090 - INFO - Successfully released WPQ 103067
+2025-07-26 14:25:09,090 - INFO - 
+Processing PO: PO25000318 (WPQ: 103074)
+2025-07-26 14:25:09,090 - INFO - Marking WPQ 103074 as in process
+2025-07-26 14:25:09,092 - INFO - Successfully marked WPQ 103074 as in process
+2025-07-26 14:25:09,092 - INFO - Fetching line items for WPQ: 103074
+2025-07-26 14:25:09,096 - INFO - Successfully fetched 1 line items for WPQ 103074
+2025-07-26 14:25:09,096 - INFO - Fetching audit logs for WPQ: 103074
+2025-07-26 14:25:09,098 - INFO - Successfully fetched 2 audit logs for WPQ 103074
+2025-07-26 14:25:09,099 - INFO - Time since last action: 2 days, 5:55:17.098941, Should process: False
+2025-07-26 14:25:09,099 - INFO - Skipping PO PO25000318 - recent communication exists
+2025-07-26 14:25:09,099 - INFO - Releasing WPQ 103074
+2025-07-26 14:25:09,101 - INFO - Successfully released WPQ 103074
+2025-07-26 14:25:09,101 - INFO - 
+Processing PO: PO25000303 (WPQ: 103101)
+2025-07-26 14:25:09,101 - INFO - Marking WPQ 103101 as in process
+2025-07-26 14:25:09,103 - INFO - Successfully marked WPQ 103101 as in process
+2025-07-26 14:25:09,103 - INFO - Fetching line items for WPQ: 103101
+2025-07-26 14:25:09,107 - INFO - Successfully fetched 1 line items for WPQ 103101
+2025-07-26 14:25:09,107 - INFO - Fetching audit logs for WPQ: 103101
+2025-07-26 14:25:09,109 - INFO - Successfully fetched 3 audit logs for WPQ 103101
+2025-07-26 14:25:09,110 - INFO - Time since last action: 2 days, 5:54:20.110000, Should process: False
+2025-07-26 14:25:09,110 - INFO - Skipping PO PO25000303 - recent communication exists
+2025-07-26 14:25:09,110 - INFO - Releasing WPQ 103101
+2025-07-26 14:25:09,112 - INFO - Successfully released WPQ 103101
+2025-07-26 14:25:09,112 - INFO - 
+Processing PO: PO25000326 (WPQ: 103121)
+2025-07-26 14:25:09,112 - INFO - Marking WPQ 103121 as in process
+2025-07-26 14:25:09,115 - INFO - Successfully marked WPQ 103121 as in process
+2025-07-26 14:25:09,115 - INFO - Fetching line items for WPQ: 103121
+2025-07-26 14:25:09,119 - INFO - Successfully fetched 2 line items for WPQ 103121
+2025-07-26 14:25:09,119 - INFO - Fetching audit logs for WPQ: 103121
+2025-07-26 14:25:09,121 - INFO - Successfully fetched 3 audit logs for WPQ 103121
+2025-07-26 14:25:09,122 - INFO - Time since last action: 2 days, 5:53:53.122040, Should process: False
+2025-07-26 14:25:09,122 - INFO - Skipping PO PO25000326 - recent communication exists
+2025-07-26 14:25:09,122 - INFO - Releasing WPQ 103121
+2025-07-26 14:25:09,124 - INFO - Successfully released WPQ 103121
+2025-07-26 14:25:09,124 - INFO - 
+Processing PO: PO25000349 (WPQ: 103137)
+2025-07-26 14:25:09,124 - INFO - Marking WPQ 103137 as in process
+2025-07-26 14:25:09,126 - INFO - Successfully marked WPQ 103137 as in process
+2025-07-26 14:25:09,126 - INFO - Fetching line items for WPQ: 103137
+2025-07-26 14:25:09,130 - INFO - Successfully fetched 1 line items for WPQ 103137
+2025-07-26 14:25:09,130 - INFO - Fetching audit logs for WPQ: 103137
+2025-07-26 14:25:09,132 - INFO - Successfully fetched 3 audit logs for WPQ 103137
+2025-07-26 14:25:09,132 - INFO - Time since last action: 2 days, 5:53:21.132904, Should process: False
+2025-07-26 14:25:09,133 - INFO - Skipping PO PO25000349 - recent communication exists
+2025-07-26 14:25:09,133 - INFO - Releasing WPQ 103137
+2025-07-26 14:25:09,135 - INFO - Successfully released WPQ 103137
+2025-07-26 14:25:09,135 - INFO - 
+Processing PO: PO25000404 (WPQ: 103194)
+2025-07-26 14:25:09,135 - INFO - Marking WPQ 103194 as in process
+2025-07-26 14:25:09,137 - INFO - Successfully marked WPQ 103194 as in process
+2025-07-26 14:25:09,137 - INFO - Fetching line items for WPQ: 103194
+2025-07-26 14:25:09,142 - INFO - Successfully fetched 1 line items for WPQ 103194
+2025-07-26 14:25:09,142 - INFO - Fetching audit logs for WPQ: 103194
+2025-07-26 14:25:09,145 - INFO - Successfully fetched 3 audit logs for WPQ 103194
+2025-07-26 14:25:09,145 - INFO - Time since last action: 2 days, 5:52:52.145407, Should process: False
+2025-07-26 14:25:09,145 - INFO - Skipping PO PO25000404 - recent communication exists
+2025-07-26 14:25:09,145 - INFO - Releasing WPQ 103194
+2025-07-26 14:25:09,148 - INFO - Successfully released WPQ 103194
+2025-07-26 14:25:09,148 - INFO - 
+Processing PO: PO25000461 (WPQ: 103256)
+2025-07-26 14:25:09,148 - INFO - Marking WPQ 103256 as in process
+2025-07-26 14:25:09,150 - INFO - Successfully marked WPQ 103256 as in process
+2025-07-26 14:25:09,150 - INFO - Fetching line items for WPQ: 103256
+2025-07-26 14:25:09,154 - INFO - Successfully fetched 1 line items for WPQ 103256
+2025-07-26 14:25:09,154 - INFO - Fetching audit logs for WPQ: 103256
+2025-07-26 14:25:09,155 - INFO - Successfully fetched 2 audit logs for WPQ 103256
+2025-07-26 14:25:09,156 - INFO - Time since last action: 3 days, 23:51:07.156024, Should process: True
+2025-07-26 14:25:09,156 - INFO - Fetching vendor language for Vendor ID: 1603
+2025-07-26 14:25:09,157 - INFO - Fetched language for Vendor ID 1603: Hebrew
+2025-07-26 14:25:09,157 - INFO - Preparing GPT data for WPQ: 103256
+2025-07-26 14:25:09,157 - INFO - Successfully prepared GPT data for WPQ: 103256
+2025-07-26 14:25:09,157 - INFO - Sending data to GPT API
+2025-07-26 14:25:09,157 - ERROR - Error processing PO PO25000461: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-26 14:25:09,157 - INFO - Releasing WPQ 103256
+2025-07-26 14:25:09,159 - INFO - Successfully released WPQ 103256
+2025-07-26 14:25:09,159 - INFO - Processing complete. Processed: 0, Skipped: 12, Errors: 0
+2025-07-26 14:25:09,160 - INFO - Database connection closed.
+2025-07-26 14:25:09,160 - INFO - PO Review System completed
+2025-07-27 14:25:03,124 - INFO - Starting PO Review System
+2025-07-27 14:25:03,125 - INFO - Reading configuration from: /root/processrunner/lane/config.ini
+2025-07-27 14:25:03,125 - INFO - Configuration loaded successfully
+2025-07-27 14:25:03,125 - INFO - Using text limit from command line: 1500
+2025-07-27 14:25:03,125 - INFO - Using database configuration from environment variables
+2025-07-27 14:25:03,125 - INFO - Connecting to database...
+2025-07-27 14:25:03,132 - INFO - Successfully connected to database
+2025-07-27 14:25:03,132 - INFO - Processing all available open POs
+2025-07-27 14:25:03,132 - INFO - Fetching open POs with CallStatus 100 and ProcessingStatus 0
+2025-07-27 14:25:03,156 - INFO - Successfully fetched 11 available open POs
+2025-07-27 14:25:03,156 - INFO - 
+Processing PO: PO24000734 (WPQ: 102561)
+2025-07-27 14:25:03,156 - INFO - Marking WPQ 102561 as in process
+2025-07-27 14:25:03,160 - INFO - Successfully marked WPQ 102561 as in process
+2025-07-27 14:25:03,160 - INFO - Fetching line items for WPQ: 102561
+2025-07-27 14:25:03,173 - INFO - Successfully fetched 1 line items for WPQ 102561
+2025-07-27 14:25:03,173 - INFO - Fetching audit logs for WPQ: 102561
+2025-07-27 14:25:03,184 - INFO - Successfully fetched 8 audit logs for WPQ 102561
+2025-07-27 14:25:03,185 - INFO - Time since last action: 3 days, 5:59:09.185062, Should process: True
+2025-07-27 14:25:03,185 - INFO - Fetching vendor language for Vendor ID: 1288
+2025-07-27 14:25:03,186 - INFO - No language specified for Vendor ID 1288, defaulting to Hebrew
+2025-07-27 14:25:03,186 - INFO - Preparing GPT data for WPQ: 102561
+2025-07-27 14:25:03,187 - INFO - Successfully prepared GPT data for WPQ: 102561
+2025-07-27 14:25:03,187 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,187 - ERROR - Error processing PO PO24000734: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,187 - INFO - Releasing WPQ 102561
+2025-07-27 14:25:03,190 - INFO - Successfully released WPQ 102561
+2025-07-27 14:25:03,190 - INFO - 
+Processing PO: PO25000072 (WPQ: 102842)
+2025-07-27 14:25:03,190 - INFO - Marking WPQ 102842 as in process
+2025-07-27 14:25:03,193 - INFO - Successfully marked WPQ 102842 as in process
+2025-07-27 14:25:03,193 - INFO - Fetching line items for WPQ: 102842
+2025-07-27 14:25:03,197 - INFO - Successfully fetched 1 line items for WPQ 102842
+2025-07-27 14:25:03,197 - INFO - Fetching audit logs for WPQ: 102842
+2025-07-27 14:25:03,199 - INFO - Successfully fetched 8 audit logs for WPQ 102842
+2025-07-27 14:25:03,200 - INFO - Time since last action: 3 days, 5:58:43.200088, Should process: True
+2025-07-27 14:25:03,200 - INFO - Fetching vendor language for Vendor ID: 1424
+2025-07-27 14:25:03,201 - INFO - Fetched language for Vendor ID 1424: Hebrew
+2025-07-27 14:25:03,201 - INFO - Preparing GPT data for WPQ: 102842
+2025-07-27 14:25:03,201 - INFO - Successfully prepared GPT data for WPQ: 102842
+2025-07-27 14:25:03,201 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,201 - ERROR - Error processing PO PO25000072: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,201 - INFO - Releasing WPQ 102842
+2025-07-27 14:25:03,204 - INFO - Successfully released WPQ 102842
+2025-07-27 14:25:03,204 - INFO - 
+Processing PO: PO25000117 (WPQ: 102888)
+2025-07-27 14:25:03,204 - INFO - Marking WPQ 102888 as in process
+2025-07-27 14:25:03,206 - INFO - Successfully marked WPQ 102888 as in process
+2025-07-27 14:25:03,206 - INFO - Fetching line items for WPQ: 102888
+2025-07-27 14:25:03,210 - INFO - Successfully fetched 1 line items for WPQ 102888
+2025-07-27 14:25:03,210 - INFO - Fetching audit logs for WPQ: 102888
+2025-07-27 14:25:03,212 - INFO - Successfully fetched 4 audit logs for WPQ 102888
+2025-07-27 14:25:03,212 - INFO - Time since last action: 3 days, 5:57:57.212799, Should process: True
+2025-07-27 14:25:03,212 - INFO - Fetching vendor language for Vendor ID: 94
+2025-07-27 14:25:03,213 - INFO - No language specified for Vendor ID 94, defaulting to Hebrew
+2025-07-27 14:25:03,213 - INFO - Preparing GPT data for WPQ: 102888
+2025-07-27 14:25:03,214 - INFO - Successfully prepared GPT data for WPQ: 102888
+2025-07-27 14:25:03,214 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,214 - ERROR - Error processing PO PO25000117: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,214 - INFO - Releasing WPQ 102888
+2025-07-27 14:25:03,216 - INFO - Successfully released WPQ 102888
+2025-07-27 14:25:03,217 - INFO - 
+Processing PO: PO25000181 (WPQ: 102972)
+2025-07-27 14:25:03,217 - INFO - Marking WPQ 102972 as in process
+2025-07-27 14:25:03,219 - INFO - Successfully marked WPQ 102972 as in process
+2025-07-27 14:25:03,219 - INFO - Fetching line items for WPQ: 102972
+2025-07-27 14:25:03,223 - INFO - Successfully fetched 1 line items for WPQ 102972
+2025-07-27 14:25:03,223 - INFO - Fetching audit logs for WPQ: 102972
+2025-07-27 14:25:03,226 - INFO - Successfully fetched 3 audit logs for WPQ 102972
+2025-07-27 14:25:03,226 - INFO - Time since last action: 3 days, 5:57:19.226293, Should process: True
+2025-07-27 14:25:03,226 - INFO - Fetching vendor language for Vendor ID: 1588
+2025-07-27 14:25:03,227 - INFO - Fetched language for Vendor ID 1588: English
+2025-07-27 14:25:03,227 - INFO - Preparing GPT data for WPQ: 102972
+2025-07-27 14:25:03,227 - INFO - Successfully prepared GPT data for WPQ: 102972
+2025-07-27 14:25:03,227 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,228 - ERROR - Error processing PO PO25000181: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,228 - INFO - Releasing WPQ 102972
+2025-07-27 14:25:03,230 - INFO - Successfully released WPQ 102972
+2025-07-27 14:25:03,230 - INFO - 
+Processing PO: PO25000251 (WPQ: 103026)
+2025-07-27 14:25:03,230 - INFO - Marking WPQ 103026 as in process
+2025-07-27 14:25:03,232 - INFO - Successfully marked WPQ 103026 as in process
+2025-07-27 14:25:03,232 - INFO - Fetching line items for WPQ: 103026
+2025-07-27 14:25:03,236 - INFO - Successfully fetched 2 line items for WPQ 103026
+2025-07-27 14:25:03,236 - INFO - Fetching audit logs for WPQ: 103026
+2025-07-27 14:25:03,238 - INFO - Successfully fetched 3 audit logs for WPQ 103026
+2025-07-27 14:25:03,238 - INFO - Time since last action: 3 days, 5:56:50.238743, Should process: True
+2025-07-27 14:25:03,238 - INFO - Fetching vendor language for Vendor ID: 1510
+2025-07-27 14:25:03,239 - INFO - Fetched language for Vendor ID 1510: English
+2025-07-27 14:25:03,240 - INFO - Preparing GPT data for WPQ: 103026
+2025-07-27 14:25:03,240 - INFO - Successfully prepared GPT data for WPQ: 103026
+2025-07-27 14:25:03,240 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,240 - ERROR - Error processing PO PO25000251: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,240 - INFO - Releasing WPQ 103026
+2025-07-27 14:25:03,242 - INFO - Successfully released WPQ 103026
+2025-07-27 14:25:03,242 - INFO - 
+Processing PO: PO25000279 (WPQ: 103067)
+2025-07-27 14:25:03,243 - INFO - Marking WPQ 103067 as in process
+2025-07-27 14:25:03,245 - INFO - Successfully marked WPQ 103067 as in process
+2025-07-27 14:25:03,245 - INFO - Fetching line items for WPQ: 103067
+2025-07-27 14:25:03,249 - INFO - Successfully fetched 1 line items for WPQ 103067
+2025-07-27 14:25:03,249 - INFO - Fetching audit logs for WPQ: 103067
+2025-07-27 14:25:03,251 - INFO - Successfully fetched 4 audit logs for WPQ 103067
+2025-07-27 14:25:03,251 - INFO - Time since last action: 3 days, 5:55:55.251334, Should process: True
+2025-07-27 14:25:03,251 - INFO - Fetching vendor language for Vendor ID: 1526
+2025-07-27 14:25:03,252 - INFO - Fetched language for Vendor ID 1526: Hebrew
+2025-07-27 14:25:03,252 - INFO - Preparing GPT data for WPQ: 103067
+2025-07-27 14:25:03,252 - INFO - Successfully prepared GPT data for WPQ: 103067
+2025-07-27 14:25:03,253 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,253 - ERROR - Error processing PO PO25000279: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,253 - INFO - Releasing WPQ 103067
+2025-07-27 14:25:03,256 - INFO - Successfully released WPQ 103067
+2025-07-27 14:25:03,256 - INFO - 
+Processing PO: PO25000303 (WPQ: 103101)
+2025-07-27 14:25:03,256 - INFO - Marking WPQ 103101 as in process
+2025-07-27 14:25:03,258 - INFO - Successfully marked WPQ 103101 as in process
+2025-07-27 14:25:03,258 - INFO - Fetching line items for WPQ: 103101
+2025-07-27 14:25:03,262 - INFO - Successfully fetched 1 line items for WPQ 103101
+2025-07-27 14:25:03,262 - INFO - Fetching audit logs for WPQ: 103101
+2025-07-27 14:25:03,265 - INFO - Successfully fetched 3 audit logs for WPQ 103101
+2025-07-27 14:25:03,265 - INFO - Time since last action: 3 days, 5:54:14.265136, Should process: True
+2025-07-27 14:25:03,265 - INFO - Fetching vendor language for Vendor ID: 1088
+2025-07-27 14:25:03,266 - INFO - No language specified for Vendor ID 1088, defaulting to Hebrew
+2025-07-27 14:25:03,266 - INFO - Preparing GPT data for WPQ: 103101
+2025-07-27 14:25:03,266 - INFO - Successfully prepared GPT data for WPQ: 103101
+2025-07-27 14:25:03,266 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,267 - ERROR - Error processing PO PO25000303: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,267 - INFO - Releasing WPQ 103101
+2025-07-27 14:25:03,269 - INFO - Successfully released WPQ 103101
+2025-07-27 14:25:03,269 - INFO - 
+Processing PO: PO25000326 (WPQ: 103121)
+2025-07-27 14:25:03,269 - INFO - Marking WPQ 103121 as in process
+2025-07-27 14:25:03,272 - INFO - Successfully marked WPQ 103121 as in process
+2025-07-27 14:25:03,272 - INFO - Fetching line items for WPQ: 103121
+2025-07-27 14:25:03,276 - INFO - Successfully fetched 2 line items for WPQ 103121
+2025-07-27 14:25:03,276 - INFO - Fetching audit logs for WPQ: 103121
+2025-07-27 14:25:03,278 - INFO - Successfully fetched 3 audit logs for WPQ 103121
+2025-07-27 14:25:03,278 - INFO - Time since last action: 3 days, 5:53:47.278725, Should process: True
+2025-07-27 14:25:03,278 - INFO - Fetching vendor language for Vendor ID: 1544
+2025-07-27 14:25:03,280 - INFO - Fetched language for Vendor ID 1544: English
+2025-07-27 14:25:03,280 - INFO - Preparing GPT data for WPQ: 103121
+2025-07-27 14:25:03,280 - INFO - Successfully prepared GPT data for WPQ: 103121
+2025-07-27 14:25:03,280 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,280 - ERROR - Error processing PO PO25000326: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,280 - INFO - Releasing WPQ 103121
+2025-07-27 14:25:03,283 - INFO - Successfully released WPQ 103121
+2025-07-27 14:25:03,283 - INFO - 
+Processing PO: PO25000349 (WPQ: 103137)
+2025-07-27 14:25:03,283 - INFO - Marking WPQ 103137 as in process
+2025-07-27 14:25:03,286 - INFO - Successfully marked WPQ 103137 as in process
+2025-07-27 14:25:03,286 - INFO - Fetching line items for WPQ: 103137
+2025-07-27 14:25:03,291 - INFO - Successfully fetched 1 line items for WPQ 103137
+2025-07-27 14:25:03,291 - INFO - Fetching audit logs for WPQ: 103137
+2025-07-27 14:25:03,293 - INFO - Successfully fetched 3 audit logs for WPQ 103137
+2025-07-27 14:25:03,293 - INFO - Time since last action: 3 days, 5:53:15.293680, Should process: True
+2025-07-27 14:25:03,293 - INFO - Fetching vendor language for Vendor ID: 1557
+2025-07-27 14:25:03,295 - INFO - Fetched language for Vendor ID 1557: English
+2025-07-27 14:25:03,295 - INFO - Preparing GPT data for WPQ: 103137
+2025-07-27 14:25:03,295 - INFO - Successfully prepared GPT data for WPQ: 103137
+2025-07-27 14:25:03,295 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,295 - ERROR - Error processing PO PO25000349: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,295 - INFO - Releasing WPQ 103137
+2025-07-27 14:25:03,298 - INFO - Successfully released WPQ 103137
+2025-07-27 14:25:03,298 - INFO - 
+Processing PO: PO25000404 (WPQ: 103194)
+2025-07-27 14:25:03,298 - INFO - Marking WPQ 103194 as in process
+2025-07-27 14:25:03,301 - INFO - Successfully marked WPQ 103194 as in process
+2025-07-27 14:25:03,301 - INFO - Fetching line items for WPQ: 103194
+2025-07-27 14:25:03,305 - INFO - Successfully fetched 1 line items for WPQ 103194
+2025-07-27 14:25:03,305 - INFO - Fetching audit logs for WPQ: 103194
+2025-07-27 14:25:03,308 - INFO - Successfully fetched 3 audit logs for WPQ 103194
+2025-07-27 14:25:03,308 - INFO - Time since last action: 3 days, 5:52:46.308523, Should process: True
+2025-07-27 14:25:03,308 - INFO - Fetching vendor language for Vendor ID: 1580
+2025-07-27 14:25:03,309 - INFO - Fetched language for Vendor ID 1580: English
+2025-07-27 14:25:03,309 - INFO - Preparing GPT data for WPQ: 103194
+2025-07-27 14:25:03,310 - INFO - Successfully prepared GPT data for WPQ: 103194
+2025-07-27 14:25:03,310 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,310 - ERROR - Error processing PO PO25000404: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,310 - INFO - Releasing WPQ 103194
+2025-07-27 14:25:03,314 - INFO - Successfully released WPQ 103194
+2025-07-27 14:25:03,314 - INFO - 
+Processing PO: PO25000461 (WPQ: 103256)
+2025-07-27 14:25:03,314 - INFO - Marking WPQ 103256 as in process
+2025-07-27 14:25:03,317 - INFO - Successfully marked WPQ 103256 as in process
+2025-07-27 14:25:03,317 - INFO - Fetching line items for WPQ: 103256
+2025-07-27 14:25:03,321 - INFO - Successfully fetched 1 line items for WPQ 103256
+2025-07-27 14:25:03,321 - INFO - Fetching audit logs for WPQ: 103256
+2025-07-27 14:25:03,323 - INFO - Successfully fetched 2 audit logs for WPQ 103256
+2025-07-27 14:25:03,323 - INFO - Time since last action: 4 days, 23:51:01.323827, Should process: True
+2025-07-27 14:25:03,323 - INFO - Fetching vendor language for Vendor ID: 1603
+2025-07-27 14:25:03,325 - INFO - Fetched language for Vendor ID 1603: Hebrew
+2025-07-27 14:25:03,325 - INFO - Preparing GPT data for WPQ: 103256
+2025-07-27 14:25:03,325 - INFO - Successfully prepared GPT data for WPQ: 103256
+2025-07-27 14:25:03,325 - INFO - Sending data to GPT API
+2025-07-27 14:25:03,325 - ERROR - Error processing PO PO25000461: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-27 14:25:03,325 - INFO - Releasing WPQ 103256
+2025-07-27 14:25:03,328 - INFO - Successfully released WPQ 103256
+2025-07-27 14:25:03,328 - INFO - Processing complete. Processed: 0, Skipped: 11, Errors: 0
+2025-07-27 14:25:03,328 - INFO - Database connection closed.
+2025-07-27 14:25:03,328 - INFO - PO Review System completed
+2025-07-28 14:25:03,517 - INFO - Starting PO Review System
+2025-07-28 14:25:03,518 - INFO - Reading configuration from: /root/processrunner/lane/config.ini
+2025-07-28 14:25:03,518 - INFO - Configuration loaded successfully
+2025-07-28 14:25:03,518 - INFO - Using text limit from command line: 1500
+2025-07-28 14:25:03,518 - INFO - Using database configuration from environment variables
+2025-07-28 14:25:03,518 - INFO - Connecting to database...
+2025-07-28 14:25:03,525 - INFO - Successfully connected to database
+2025-07-28 14:25:03,525 - INFO - Processing all available open POs
+2025-07-28 14:25:03,525 - INFO - Fetching open POs with CallStatus 100 and ProcessingStatus 0
+2025-07-28 14:25:03,551 - INFO - Successfully fetched 13 available open POs
+2025-07-28 14:25:03,551 - INFO - 
+Processing PO: PO24000734 (WPQ: 102561)
+2025-07-28 14:25:03,551 - INFO - Marking WPQ 102561 as in process
+2025-07-28 14:25:03,554 - INFO - Successfully marked WPQ 102561 as in process
+2025-07-28 14:25:03,554 - INFO - Fetching line items for WPQ: 102561
+2025-07-28 14:25:03,569 - INFO - Successfully fetched 1 line items for WPQ 102561
+2025-07-28 14:25:03,569 - INFO - Fetching audit logs for WPQ: 102561
+2025-07-28 14:25:03,582 - INFO - Successfully fetched 8 audit logs for WPQ 102561
+2025-07-28 14:25:03,582 - INFO - Time since last action: 4 days, 5:59:09.582426, Should process: True
+2025-07-28 14:25:03,582 - INFO - Fetching vendor language for Vendor ID: 1288
+2025-07-28 14:25:03,584 - INFO - No language specified for Vendor ID 1288, defaulting to Hebrew
+2025-07-28 14:25:03,584 - INFO - Preparing GPT data for WPQ: 102561
+2025-07-28 14:25:03,584 - INFO - Successfully prepared GPT data for WPQ: 102561
+2025-07-28 14:25:03,584 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,584 - ERROR - Error processing PO PO24000734: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,584 - INFO - Releasing WPQ 102561
+2025-07-28 14:25:03,587 - INFO - Successfully released WPQ 102561
+2025-07-28 14:25:03,588 - INFO - 
+Processing PO: PO25000072 (WPQ: 102842)
+2025-07-28 14:25:03,588 - INFO - Marking WPQ 102842 as in process
+2025-07-28 14:25:03,590 - INFO - Successfully marked WPQ 102842 as in process
+2025-07-28 14:25:03,590 - INFO - Fetching line items for WPQ: 102842
+2025-07-28 14:25:03,595 - INFO - Successfully fetched 1 line items for WPQ 102842
+2025-07-28 14:25:03,595 - INFO - Fetching audit logs for WPQ: 102842
+2025-07-28 14:25:03,598 - INFO - Successfully fetched 8 audit logs for WPQ 102842
+2025-07-28 14:25:03,598 - INFO - Time since last action: 4 days, 5:58:43.598644, Should process: True
+2025-07-28 14:25:03,598 - INFO - Fetching vendor language for Vendor ID: 1424
+2025-07-28 14:25:03,599 - INFO - Fetched language for Vendor ID 1424: Hebrew
+2025-07-28 14:25:03,600 - INFO - Preparing GPT data for WPQ: 102842
+2025-07-28 14:25:03,600 - INFO - Successfully prepared GPT data for WPQ: 102842
+2025-07-28 14:25:03,600 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,600 - ERROR - Error processing PO PO25000072: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,600 - INFO - Releasing WPQ 102842
+2025-07-28 14:25:03,603 - INFO - Successfully released WPQ 102842
+2025-07-28 14:25:03,603 - INFO - 
+Processing PO: PO25000117 (WPQ: 102888)
+2025-07-28 14:25:03,603 - INFO - Marking WPQ 102888 as in process
+2025-07-28 14:25:03,606 - INFO - Successfully marked WPQ 102888 as in process
+2025-07-28 14:25:03,606 - INFO - Fetching line items for WPQ: 102888
+2025-07-28 14:25:03,610 - INFO - Successfully fetched 1 line items for WPQ 102888
+2025-07-28 14:25:03,610 - INFO - Fetching audit logs for WPQ: 102888
+2025-07-28 14:25:03,613 - INFO - Successfully fetched 4 audit logs for WPQ 102888
+2025-07-28 14:25:03,613 - INFO - Time since last action: 4 days, 5:57:57.613180, Should process: True
+2025-07-28 14:25:03,613 - INFO - Fetching vendor language for Vendor ID: 94
+2025-07-28 14:25:03,614 - INFO - No language specified for Vendor ID 94, defaulting to Hebrew
+2025-07-28 14:25:03,614 - INFO - Preparing GPT data for WPQ: 102888
+2025-07-28 14:25:03,614 - INFO - Successfully prepared GPT data for WPQ: 102888
+2025-07-28 14:25:03,614 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,614 - ERROR - Error processing PO PO25000117: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,614 - INFO - Releasing WPQ 102888
+2025-07-28 14:25:03,617 - INFO - Successfully released WPQ 102888
+2025-07-28 14:25:03,617 - INFO - 
+Processing PO: PO25000181 (WPQ: 102972)
+2025-07-28 14:25:03,617 - INFO - Marking WPQ 102972 as in process
+2025-07-28 14:25:03,620 - INFO - Successfully marked WPQ 102972 as in process
+2025-07-28 14:25:03,620 - INFO - Fetching line items for WPQ: 102972
+2025-07-28 14:25:03,625 - INFO - Successfully fetched 1 line items for WPQ 102972
+2025-07-28 14:25:03,625 - INFO - Fetching audit logs for WPQ: 102972
+2025-07-28 14:25:03,627 - INFO - Successfully fetched 3 audit logs for WPQ 102972
+2025-07-28 14:25:03,628 - INFO - Time since last action: 4 days, 5:57:19.628126, Should process: True
+2025-07-28 14:25:03,628 - INFO - Fetching vendor language for Vendor ID: 1588
+2025-07-28 14:25:03,629 - INFO - Fetched language for Vendor ID 1588: English
+2025-07-28 14:25:03,629 - INFO - Preparing GPT data for WPQ: 102972
+2025-07-28 14:25:03,629 - INFO - Successfully prepared GPT data for WPQ: 102972
+2025-07-28 14:25:03,629 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,629 - ERROR - Error processing PO PO25000181: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,629 - INFO - Releasing WPQ 102972
+2025-07-28 14:25:03,632 - INFO - Successfully released WPQ 102972
+2025-07-28 14:25:03,632 - INFO - 
+Processing PO: PO25000251 (WPQ: 103026)
+2025-07-28 14:25:03,632 - INFO - Marking WPQ 103026 as in process
+2025-07-28 14:25:03,635 - INFO - Successfully marked WPQ 103026 as in process
+2025-07-28 14:25:03,635 - INFO - Fetching line items for WPQ: 103026
+2025-07-28 14:25:03,640 - INFO - Successfully fetched 2 line items for WPQ 103026
+2025-07-28 14:25:03,640 - INFO - Fetching audit logs for WPQ: 103026
+2025-07-28 14:25:03,643 - INFO - Successfully fetched 3 audit logs for WPQ 103026
+2025-07-28 14:25:03,643 - INFO - Time since last action: 4 days, 5:56:50.643250, Should process: True
+2025-07-28 14:25:03,643 - INFO - Fetching vendor language for Vendor ID: 1510
+2025-07-28 14:25:03,644 - INFO - Fetched language for Vendor ID 1510: English
+2025-07-28 14:25:03,644 - INFO - Preparing GPT data for WPQ: 103026
+2025-07-28 14:25:03,644 - INFO - Successfully prepared GPT data for WPQ: 103026
+2025-07-28 14:25:03,644 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,645 - ERROR - Error processing PO PO25000251: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,645 - INFO - Releasing WPQ 103026
+2025-07-28 14:25:03,647 - INFO - Successfully released WPQ 103026
+2025-07-28 14:25:03,647 - INFO - 
+Processing PO: PO25000279 (WPQ: 103067)
+2025-07-28 14:25:03,647 - INFO - Marking WPQ 103067 as in process
+2025-07-28 14:25:03,649 - INFO - Successfully marked WPQ 103067 as in process
+2025-07-28 14:25:03,650 - INFO - Fetching line items for WPQ: 103067
+2025-07-28 14:25:03,654 - INFO - Successfully fetched 1 line items for WPQ 103067
+2025-07-28 14:25:03,654 - INFO - Fetching audit logs for WPQ: 103067
+2025-07-28 14:25:03,656 - INFO - Successfully fetched 4 audit logs for WPQ 103067
+2025-07-28 14:25:03,656 - INFO - Time since last action: 4 days, 5:55:55.656710, Should process: True
+2025-07-28 14:25:03,656 - INFO - Fetching vendor language for Vendor ID: 1526
+2025-07-28 14:25:03,657 - INFO - Fetched language for Vendor ID 1526: Hebrew
+2025-07-28 14:25:03,658 - INFO - Preparing GPT data for WPQ: 103067
+2025-07-28 14:25:03,658 - INFO - Successfully prepared GPT data for WPQ: 103067
+2025-07-28 14:25:03,658 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,658 - ERROR - Error processing PO PO25000279: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,658 - INFO - Releasing WPQ 103067
+2025-07-28 14:25:03,661 - INFO - Successfully released WPQ 103067
+2025-07-28 14:25:03,661 - INFO - 
+Processing PO: PO25000303 (WPQ: 103101)
+2025-07-28 14:25:03,661 - INFO - Marking WPQ 103101 as in process
+2025-07-28 14:25:03,663 - INFO - Successfully marked WPQ 103101 as in process
+2025-07-28 14:25:03,663 - INFO - Fetching line items for WPQ: 103101
+2025-07-28 14:25:03,667 - INFO - Successfully fetched 1 line items for WPQ 103101
+2025-07-28 14:25:03,667 - INFO - Fetching audit logs for WPQ: 103101
+2025-07-28 14:25:03,669 - INFO - Successfully fetched 3 audit logs for WPQ 103101
+2025-07-28 14:25:03,669 - INFO - Time since last action: 4 days, 5:54:14.669514, Should process: True
+2025-07-28 14:25:03,669 - INFO - Fetching vendor language for Vendor ID: 1088
+2025-07-28 14:25:03,670 - INFO - No language specified for Vendor ID 1088, defaulting to Hebrew
+2025-07-28 14:25:03,670 - INFO - Preparing GPT data for WPQ: 103101
+2025-07-28 14:25:03,670 - INFO - Successfully prepared GPT data for WPQ: 103101
+2025-07-28 14:25:03,671 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,671 - ERROR - Error processing PO PO25000303: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,671 - INFO - Releasing WPQ 103101
+2025-07-28 14:25:03,673 - INFO - Successfully released WPQ 103101
+2025-07-28 14:25:03,674 - INFO - 
+Processing PO: PO25000326 (WPQ: 103121)
+2025-07-28 14:25:03,674 - INFO - Marking WPQ 103121 as in process
+2025-07-28 14:25:03,676 - INFO - Successfully marked WPQ 103121 as in process
+2025-07-28 14:25:03,677 - INFO - Fetching line items for WPQ: 103121
+2025-07-28 14:25:03,681 - INFO - Successfully fetched 2 line items for WPQ 103121
+2025-07-28 14:25:03,681 - INFO - Fetching audit logs for WPQ: 103121
+2025-07-28 14:25:03,684 - INFO - Successfully fetched 3 audit logs for WPQ 103121
+2025-07-28 14:25:03,684 - INFO - Time since last action: 4 days, 5:53:47.684185, Should process: True
+2025-07-28 14:25:03,684 - INFO - Fetching vendor language for Vendor ID: 1544
+2025-07-28 14:25:03,685 - INFO - Fetched language for Vendor ID 1544: English
+2025-07-28 14:25:03,685 - INFO - Preparing GPT data for WPQ: 103121
+2025-07-28 14:25:03,685 - INFO - Successfully prepared GPT data for WPQ: 103121
+2025-07-28 14:25:03,685 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,686 - ERROR - Error processing PO PO25000326: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,686 - INFO - Releasing WPQ 103121
+2025-07-28 14:25:03,688 - INFO - Successfully released WPQ 103121
+2025-07-28 14:25:03,688 - INFO - 
+Processing PO: PO25000349 (WPQ: 103137)
+2025-07-28 14:25:03,689 - INFO - Marking WPQ 103137 as in process
+2025-07-28 14:25:03,691 - INFO - Successfully marked WPQ 103137 as in process
+2025-07-28 14:25:03,691 - INFO - Fetching line items for WPQ: 103137
+2025-07-28 14:25:03,695 - INFO - Successfully fetched 1 line items for WPQ 103137
+2025-07-28 14:25:03,695 - INFO - Fetching audit logs for WPQ: 103137
+2025-07-28 14:25:03,697 - INFO - Successfully fetched 3 audit logs for WPQ 103137
+2025-07-28 14:25:03,698 - INFO - Time since last action: 4 days, 5:53:15.697973, Should process: True
+2025-07-28 14:25:03,698 - INFO - Fetching vendor language for Vendor ID: 1557
+2025-07-28 14:25:03,699 - INFO - Fetched language for Vendor ID 1557: English
+2025-07-28 14:25:03,699 - INFO - Preparing GPT data for WPQ: 103137
+2025-07-28 14:25:03,699 - INFO - Successfully prepared GPT data for WPQ: 103137
+2025-07-28 14:25:03,699 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,699 - ERROR - Error processing PO PO25000349: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,699 - INFO - Releasing WPQ 103137
+2025-07-28 14:25:03,701 - INFO - Successfully released WPQ 103137
+2025-07-28 14:25:03,702 - INFO - 
+Processing PO: PO25000404 (WPQ: 103194)
+2025-07-28 14:25:03,702 - INFO - Marking WPQ 103194 as in process
+2025-07-28 14:25:03,704 - INFO - Successfully marked WPQ 103194 as in process
+2025-07-28 14:25:03,704 - INFO - Fetching line items for WPQ: 103194
+2025-07-28 14:25:03,709 - INFO - Successfully fetched 1 line items for WPQ 103194
+2025-07-28 14:25:03,709 - INFO - Fetching audit logs for WPQ: 103194
+2025-07-28 14:25:03,711 - INFO - Successfully fetched 3 audit logs for WPQ 103194
+2025-07-28 14:25:03,712 - INFO - Time since last action: 4 days, 5:52:46.712019, Should process: True
+2025-07-28 14:25:03,712 - INFO - Fetching vendor language for Vendor ID: 1580
+2025-07-28 14:25:03,713 - INFO - Fetched language for Vendor ID 1580: English
+2025-07-28 14:25:03,713 - INFO - Preparing GPT data for WPQ: 103194
+2025-07-28 14:25:03,713 - INFO - Successfully prepared GPT data for WPQ: 103194
+2025-07-28 14:25:03,713 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,713 - ERROR - Error processing PO PO25000404: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,713 - INFO - Releasing WPQ 103194
+2025-07-28 14:25:03,716 - INFO - Successfully released WPQ 103194
+2025-07-28 14:25:03,716 - INFO - 
+Processing PO: PO25000479 (WPQ: 103255)
+2025-07-28 14:25:03,716 - INFO - Marking WPQ 103255 as in process
+2025-07-28 14:25:03,718 - INFO - Successfully marked WPQ 103255 as in process
+2025-07-28 14:25:03,718 - INFO - Fetching line items for WPQ: 103255
+2025-07-28 14:25:03,723 - INFO - Successfully fetched 1 line items for WPQ 103255
+2025-07-28 14:25:03,723 - INFO - Fetching audit logs for WPQ: 103255
+2025-07-28 14:25:03,724 - INFO - Successfully fetched 0 audit logs for WPQ 103255
+2025-07-28 14:25:03,724 - INFO - No audit logs found - PO should be processed
+2025-07-28 14:25:03,724 - INFO - Fetching vendor language for Vendor ID: 1606
+2025-07-28 14:25:03,726 - INFO - No language specified for Vendor ID 1606, defaulting to Hebrew
+2025-07-28 14:25:03,726 - INFO - Preparing GPT data for WPQ: 103255
+2025-07-28 14:25:03,726 - INFO - Successfully prepared GPT data for WPQ: 103255
+2025-07-28 14:25:03,726 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,726 - ERROR - Error processing PO PO25000479: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,726 - INFO - Releasing WPQ 103255
+2025-07-28 14:25:03,729 - INFO - Successfully released WPQ 103255
+2025-07-28 14:25:03,729 - INFO - 
+Processing PO: PO25000461 (WPQ: 103256)
+2025-07-28 14:25:03,729 - INFO - Marking WPQ 103256 as in process
+2025-07-28 14:25:03,731 - INFO - Successfully marked WPQ 103256 as in process
+2025-07-28 14:25:03,731 - INFO - Fetching line items for WPQ: 103256
+2025-07-28 14:25:03,737 - INFO - Successfully fetched 1 line items for WPQ 103256
+2025-07-28 14:25:03,737 - INFO - Fetching audit logs for WPQ: 103256
+2025-07-28 14:25:03,739 - INFO - Successfully fetched 2 audit logs for WPQ 103256
+2025-07-28 14:25:03,739 - INFO - Time since last action: 5 days, 23:51:01.739936, Should process: True
+2025-07-28 14:25:03,740 - INFO - Fetching vendor language for Vendor ID: 1603
+2025-07-28 14:25:03,741 - INFO - Fetched language for Vendor ID 1603: Hebrew
+2025-07-28 14:25:03,741 - INFO - Preparing GPT data for WPQ: 103256
+2025-07-28 14:25:03,741 - INFO - Successfully prepared GPT data for WPQ: 103256
+2025-07-28 14:25:03,741 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,741 - ERROR - Error processing PO PO25000461: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,741 - INFO - Releasing WPQ 103256
+2025-07-28 14:25:03,744 - INFO - Successfully released WPQ 103256
+2025-07-28 14:25:03,744 - INFO - 
+Processing PO: PO25000478 (WPQ: 103273)
+2025-07-28 14:25:03,744 - INFO - Marking WPQ 103273 as in process
+2025-07-28 14:25:03,746 - INFO - Successfully marked WPQ 103273 as in process
+2025-07-28 14:25:03,746 - INFO - Fetching line items for WPQ: 103273
+2025-07-28 14:25:03,752 - INFO - Successfully fetched 1 line items for WPQ 103273
+2025-07-28 14:25:03,752 - INFO - Fetching audit logs for WPQ: 103273
+2025-07-28 14:25:03,754 - INFO - Successfully fetched 0 audit logs for WPQ 103273
+2025-07-28 14:25:03,754 - INFO - No audit logs found - PO should be processed
+2025-07-28 14:25:03,754 - INFO - Fetching vendor language for Vendor ID: 1610
+2025-07-28 14:25:03,755 - INFO - Fetched language for Vendor ID 1610: Hebrew
+2025-07-28 14:25:03,756 - INFO - Preparing GPT data for WPQ: 103273
+2025-07-28 14:25:03,756 - INFO - Successfully prepared GPT data for WPQ: 103273
+2025-07-28 14:25:03,756 - INFO - Sending data to GPT API
+2025-07-28 14:25:03,756 - ERROR - Error processing PO PO25000478: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-07-28 14:25:03,756 - INFO - Releasing WPQ 103273
+2025-07-28 14:25:03,759 - INFO - Successfully released WPQ 103273
+2025-07-28 14:25:03,759 - INFO - Processing complete. Processed: 0, Skipped: 13, Errors: 0
+2025-07-28 14:25:03,759 - INFO - Database connection closed.
+2025-07-28 14:25:03,759 - INFO - PO Review System completed

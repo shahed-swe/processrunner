@@ -1,21 +1,21 @@
-#!/usr/bin/env python3
-# email_notifications_linux.py
+#send_file_linux-grpah#!/usr/bin/env python3
+# email_notifications_graph_linux.py - Using Microsoft Graph API
 
-import imaplib
-import email
-import smtplib
 import os
+import requests
+import msal
 import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
 import json
 import time
 import configparser
-from email.header import decode_header
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
+import base64
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Load configuration
 config = configparser.ConfigParser()
@@ -29,18 +29,212 @@ DB_CONFIG = {
     'password': config['Production']['password']
 }
 
-# Email configuration
-EMAIL_CONFIG = {
-    'imap_server': config.get('Email', 'imap_server', fallback='outlook.office365.com'),
-    'imap_port': config.getint('Email', 'imap_port', fallback=993),
-    'smtp_server': config.get('Email', 'smtp_server', fallback='smtp.office365.com'),
-    'smtp_port': config.getint('Email', 'smtp_port', fallback=587),
-    'email': config.get('Email', 'email_address', fallback='po@supsol-scm.com'),
-    'use_ssl': config.getboolean('Email', 'use_ssl', fallback=True)
-}
+# Graph API configuration
+try:
+    GRAPH_CONFIG = {
+        'client_id': config['GraphAPI']['client_id'],
+        'client_secret': config['GraphAPI']['client_secret'],
+        'tenant_id': config['GraphAPI']['tenant_id'],
+        'user_email': config['GraphAPI']['user_email']  # po@supsol-scm.com
+    }
+except KeyError:
+    print("ERROR: Missing [GraphAPI] section in configi.ini!")
+    print("Please add GraphAPI configuration section")
+    exit(1)
 
 # Default supporter emails (fallback)
 DEFAULT_SUPPORTER_EMAILS = ["support@supsol-scm.com", "elinoamgoury@supsol-scm.com"]
+
+class GraphEmailSender:
+    """Microsoft Graph API client for sending emails"""
+    
+    def __init__(self):
+        self.access_token = None
+        self.token_expires_at = None
+        
+    def _get_access_token(self):
+        """Get or refresh access token"""
+        try:
+            if self.access_token and self.token_expires_at:
+                if time.time() < self.token_expires_at - 300:  # 5 min buffer
+                    return self.access_token
+            
+            app = msal.ConfidentialClientApplication(
+                client_id=GRAPH_CONFIG['client_id'],
+                client_credential=GRAPH_CONFIG['client_secret'],
+                authority=f"https://login.microsoftonline.com/{GRAPH_CONFIG['tenant_id']}"
+            )
+            
+            result = app.acquire_token_for_client(
+                scopes=["https://graph.microsoft.com/.default"]
+            )
+            
+            if "access_token" in result:
+                self.access_token = result["access_token"]
+                expires_in = result.get("expires_in", 3600)
+                self.token_expires_at = time.time() + expires_in
+                logger.info("Successfully obtained Graph API access token")
+                return self.access_token
+            else:
+                logger.error(f"Failed to get access token: {result.get('error_description', 'Unknown error')}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"Exception getting access token: {e}")
+            return None
+    
+    def find_original_email_by_message_id(self, message_id):
+        """Find original email by internet message ID"""
+        access_token = self._get_access_token()
+        if not access_token:
+            return None
+        
+        try:
+            # Search for email by internetMessageId
+            url = f"https://graph.microsoft.com/v1.0/users/{GRAPH_CONFIG['user_email']}/messages"
+            
+            headers = {
+                'Authorization': f'Bearer {access_token}'
+            }
+            
+            # Filter by internetMessageId
+            params = {
+                '$filter': f"internetMessageId eq '{message_id}'",
+                '$select': 'id,subject,from,receivedDateTime,body,internetMessageId',
+                '$top': 1
+            }
+            
+            response = requests.get(url, headers=headers, params=params)
+            
+            if response.status_code == 200:
+                emails = response.json().get('value', [])
+                if emails:
+                    logger.info(f"Found original email: {emails[0].get('subject', 'No Subject')}")
+                    return emails[0]
+                else:
+                    logger.warning(f"Original email not found with message ID: {message_id[:50]}...")
+                    return None
+            else:
+                logger.error(f"Failed to search for original email: {response.status_code}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"Exception finding original email: {e}")
+            return None
+    
+    def forward_email_with_comment(self, original_email_id, to_recipients, comment):
+        """Forward original email with comment using Graph API native forward"""
+        access_token = self._get_access_token()
+        if not access_token:
+            return False
+        
+        try:
+            url = f"https://graph.microsoft.com/v1.0/users/{GRAPH_CONFIG['user_email']}/messages/{original_email_id}/forward"
+            
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json'
+            }
+            
+            # Build recipients list
+            to_recipients_list = [{"emailAddress": {"address": email}} for email in to_recipients]
+            
+            # Build forward data
+            forward_data = {
+                "toRecipients": to_recipients_list,
+                "comment": comment
+            }
+            
+            response = requests.post(url, headers=headers, json=forward_data)
+            
+            if response.status_code == 202:  # Accepted
+                logger.info(f"Email forwarded successfully using Graph API")
+                return True
+            else:
+                logger.error(f"Failed to forward email: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Exception forwarding email: {e}")
+            return False
+    
+    def send_notification_email(self, to_recipients, subject, message_content):
+        """Send notification email using Graph API"""
+        access_token = self._get_access_token()
+        if not access_token:
+            return False
+        
+        try:
+            url = f"https://graph.microsoft.com/v1.0/users/{GRAPH_CONFIG['user_email']}/sendMail"
+            
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json'
+            }
+            
+            # Build recipients list
+            to_recipients_list = [{"emailAddress": {"address": email}} for email in to_recipients]
+            
+            # Build email message
+            email_message = {
+                "message": {
+                    "subject": subject,
+                    "body": {
+                        "contentType": "Text",
+                        "content": message_content
+                    },
+                    "toRecipients": to_recipients_list,
+                    "from": {
+                        "emailAddress": {
+                            "address": GRAPH_CONFIG['user_email']
+                        }
+                    }
+                }
+            }
+            
+            response = requests.post(url, headers=headers, json=email_message)
+            
+            if response.status_code == 202:  # Accepted
+                logger.info(f"Notification email sent successfully")
+                return True
+            else:
+                logger.error(f"Failed to send notification email: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Exception sending notification email: {e}")
+            return False
+    
+    def mark_email_as_read(self, email_id):
+        """Mark email as read"""
+        access_token = self._get_access_token()
+        if not access_token:
+            return False
+        
+        try:
+            url = f"https://graph.microsoft.com/v1.0/users/{GRAPH_CONFIG['user_email']}/messages/{email_id}"
+            
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json'
+            }
+            
+            data = {
+                "isRead": True
+            }
+            
+            response = requests.patch(url, headers=headers, json=data)
+            
+            if response.status_code == 200:
+                logger.info(f"Marked email as read: {email_id[:10]}...")
+                return True
+            else:
+                logger.error(f"Failed to mark email as read: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Exception marking email as read: {e}")
+            return False
 
 def create_db_connection():
     """Create database connection"""
@@ -55,48 +249,6 @@ def print_and_log(message):
     """Print message to console with timestamp"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] {message}")
-
-def get_credentials(file_path):
-    """Read email credentials from file"""
-    try:
-        with open(file_path, 'r') as file:
-            email_addr = file.readline().strip()
-            password = file.readline().strip()
-        print(f"Credentials read for email: {email_addr}")
-        return email_addr, password
-    except Exception as e:
-        print(f"Error reading credentials file: {e}")
-        return None, None
-
-def connect_to_email(email_address, password):
-    """Connect to email server via IMAP"""
-    try:
-        if EMAIL_CONFIG['use_ssl']:
-            mail = imaplib.IMAP4_SSL(EMAIL_CONFIG['imap_server'], EMAIL_CONFIG['imap_port'])
-        else:
-            mail = imaplib.IMAP4(EMAIL_CONFIG['imap_server'], EMAIL_CONFIG['imap_port'])
-        
-        mail.login(email_address, password)
-        mail.select('inbox')
-        print_and_log(f"✅ Connected to email server: {EMAIL_CONFIG['imap_server']}")
-        return mail
-    except Exception as e:
-        print_and_log(f"❌ Error connecting to email server: {e}")
-        return None
-
-def decode_mime_words(s):
-    """Decode MIME encoded strings"""
-    try:
-        decoded_parts = decode_header(s)
-        decoded_string = ''
-        for part, encoding in decoded_parts:
-            if isinstance(part, bytes):
-                decoded_string += part.decode(encoding or 'utf-8')
-            else:
-                decoded_string += part
-        return decoded_string
-    except:
-        return s
 
 def get_emails_for_notification(connection):
     """Get emails that need notification - grouped by email_id"""
@@ -252,50 +404,8 @@ def determine_recipient_emails(email_record, connection):
         print(f"Error determining recipient emails: {e}")
         return DEFAULT_SUPPORTER_EMAILS, None
 
-def find_original_email_by_id(mail, email_id):
-    """Find original email by message ID in inbox"""
-    try:
-        print(f"Searching for original email with ID: {email_id[:50] if len(str(email_id)) > 50 else email_id}")
-        
-        # Search for all emails in inbox
-        status, messages = mail.search(None, 'ALL')
-        
-        if status != 'OK':
-            print("Failed to search emails")
-            return None
-        
-        email_ids = messages[0].split()
-        print(f"Searching through {len(email_ids)} emails in inbox...")
-        
-        for msg_id in email_ids:
-            try:
-                # Fetch email
-                status, msg_data = mail.fetch(msg_id, '(RFC822)')
-                if status != 'OK':
-                    continue
-                
-                # Parse email
-                raw_email = msg_data[0][1]
-                msg = email.message_from_bytes(raw_email)
-                
-                # Check Message-ID
-                message_id = msg.get('Message-ID', '')
-                if message_id == email_id:
-                    print(f"Found original email: {decode_mime_words(msg.get('Subject', 'No Subject'))}")
-                    return msg, msg_id
-                    
-            except Exception as e:
-                continue
-        
-        print(f"Original email not found with ID: {email_id[:50]}...")
-        return None, None
-        
-    except Exception as e:
-        print(f"Error finding original email: {e}")
-        return None, None
-
-def create_notification_email(email_record, recipient_emails, supporter_name, original_msg, sender_email, sender_password):
-    """Create notification email with original email as attachment or forward"""
+def create_notification_message(email_record, supporter_name):
+    """Create professional notification message"""
     try:
         email_id = email_record['email_id']
         subject = email_record['subject']
@@ -305,26 +415,15 @@ def create_notification_email(email_record, recipient_emails, supporter_name, or
         skipped_attachments = email_record['skipped_attachments']
         failed_attachments = email_record['failed_attachments']
         
-        # Create notification email
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['To'] = ", ".join(recipient_emails)
-        
-        # Set subject with FW: prefix
-        if not subject.upper().startswith('FW:'):
-            msg['Subject'] = f"FW: {subject}"
-        else:
-            msg['Subject'] = subject
-        
-        # Create professional notification message
-        wpq_number = extract_wpq_number(email_record['sample_api_data'])
-        supporter_info = f"Assigned Supporter: {supporter_name}\n" if supporter_name else ""
-        
         # Get file names for reference
         filenames_list = email_record['all_filenames'].split(',') if email_record['all_filenames'] else []
         file_summary = f"Files: {', '.join([f.strip() for f in filenames_list[:3]])}" if filenames_list else "Files: Not specified"
         if len(filenames_list) > 3:
             file_summary += "..."
+        
+        # Extract WPQ info
+        wpq_number = extract_wpq_number(email_record['sample_api_data'])
+        supporter_info = f"Assigned Supporter: {supporter_name}\n" if supporter_name else ""
         
         # Determine the notification message based on processing status
         if successful_pos > 0:
@@ -340,16 +439,17 @@ WPQ Number: {wpq_number or 'Not specified'}
 
 This is an automated notification. The Purchase Orders are now available for processing in the system portal.
 
+Original Email Subject: {subject}
+From: {sender_email_addr}
 Email ID: {email_id[:50] if len(str(email_id)) > 50 else email_id}
-----------------------------------------
 
-Original Email Content:
+Please check the system portal for the processed Purchase Orders and take appropriate action.
 """
             else:
                 # Mixed results
                 notification_message = f"""ACTION REQUIRED: 
 - Review successful Purchase Orders in the system portal
-- Manually process failed items from the original email below
+- Manually process failed items from the original email
 
 Purchase Order Processing Summary:
 Successfully Processed: {successful_pos} of {total_attachments} files
@@ -359,35 +459,33 @@ Failed Processing: {failed_attachments}
 WPQ Number: {wpq_number or 'Not specified'}
 {supporter_info}{file_summary}
 
-This is an automated notification.
-
+Original Email Subject: {subject}
+From: {sender_email_addr}
 Email ID: {email_id[:50] if len(str(email_id)) > 50 else email_id}
-----------------------------------------
 
-Original Email Content:
+This is an automated notification. Please check both the system portal and the original email.
 """
                 
         elif skipped_attachments > 0 and failed_attachments == 0:
             # All attachments were skipped
-            notification_message = f"""ACTION REQUIRED: Please review the original email below and process files manually if they contain Purchase Orders.
+            notification_message = f"""ACTION REQUIRED: Please review the original email and process files manually if they contain Purchase Orders.
 
 Processing Summary:
 Status: Files skipped - not in supported format (PDF required)
 Files: {total_attachments}
 {file_summary}
 
-This is an automated notification.
-
+Original Email Subject: {subject}
+From: {sender_email_addr}
 Email ID: {email_id[:50] if len(str(email_id)) > 50 else email_id}
-----------------------------------------
 
-Original Email Content:
+This is an automated notification. The original email may contain Purchase Orders that need manual processing.
 """
             
         else:
             # Some or all attachments failed
             error_details = email_record['error_messages'] or 'Processing failed - please check original email'
-            notification_message = f"""ACTION REQUIRED: Manual processing needed for failed items in the original email below.
+            notification_message = f"""ACTION REQUIRED: Manual processing needed for failed items.
 
 Processing Summary:
 Status: Processing failed
@@ -399,105 +497,30 @@ Failed: {failed_attachments}
 {file_summary}
 Error Details: {error_details}
 
-This is an automated notification.
-
+Original Email Subject: {subject}
+From: {sender_email_addr}
 Email ID: {email_id[:50] if len(str(email_id)) > 50 else email_id}
-----------------------------------------
 
-Original Email Content:
+This is an automated notification. Please manually review and process the original email.
 """
         
-        # Add original email content
-        if original_msg:
-            try:
-                # Get original email body
-                original_body = ""
-                for part in original_msg.walk():
-                    if part.get_content_type() == "text/plain":
-                        original_body = part.get_payload(decode=True).decode('utf-8', errors='ignore')
-                        break
-                    elif part.get_content_type() == "text/html":
-                        original_body = part.get_payload(decode=True).decode('utf-8', errors='ignore')
-                        break
-                
-                full_message = notification_message + "\n" + (original_body or "[Original email content could not be retrieved]")
-            except Exception as e:
-                print(f"Error extracting original email body: {e}")
-                full_message = notification_message + "\n[Original email content could not be retrieved]"
-        else:
-            full_message = notification_message + "\n[Original email not found]"
-        
-        # Attach the message
-        msg.attach(MIMEText(full_message, 'plain'))
-        
-        return msg
+        return notification_message
         
     except Exception as e:
-        print(f"Error creating notification email: {e}")
-        return None
+        print(f"Error creating notification message: {e}")
+        return f"Error creating notification for email: {email_record.get('subject', 'Unknown')}"
 
-def send_smtp_email(msg, sender_email, sender_password):
-    """Send email via SMTP"""
-    try:
-        # Connect to SMTP server
-        server = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'])
-        server.starttls()  # Enable encryption
-        server.login(sender_email, sender_password)
-        
-        # Send email
-        text = msg.as_string()
-        server.sendmail(sender_email, msg['To'].split(", "), text)
-        server.quit()
-        
-        print(f"Email sent successfully via SMTP")
-        return True
-        
-    except Exception as e:
-        print(f"Error sending email via SMTP: {e}")
-        return False
-
-def move_email_to_folder(mail, msg_id, folder_name="Processed"):
-    """Move email to a folder (Outlook/Exchange specific)"""
-    try:
-        # This is a simplified version - in practice, moving emails via IMAP
-        # depends on the server implementation
-        # For now, we'll just mark it as read
-        mail.store(msg_id, '+FLAGS', '\\Seen')
-        print(f"Marked email as read (folder move not implemented for IMAP)")
-        return True
-        
-    except Exception as e:
-        print(f"Error marking email as read: {e}")
-        return False
-
-def send_notifications(connection):
-    """Send professional notification emails"""
+def send_notifications_with_graph(connection):
+    """Send professional notification emails using Graph API"""
     
-    # Get email credentials
-    try:
-        credentials_file = config['Email']['credentials_file']
-        sender_email, sender_password = get_credentials(credentials_file)
-        
-        if not sender_email or not sender_password:
-            print_and_log("Failed to get email credentials")
-            return
-    except Exception as e:
-        print_and_log(f"Error getting credentials: {e}")
-        return
-    
-    # Connect to email server
-    mail = connect_to_email(sender_email, sender_password)
-    if not mail:
-        print("Could not connect to email server. Cannot send notifications.")
-        return
+    # Initialize Graph API client
+    graph_client = GraphEmailSender()
     
     # Get emails that need notification
     emails_to_notify = get_emails_for_notification(connection)
     
     if not emails_to_notify:
         print("No emails found that need notification.")
-        mail.close()
-        mail.logout()
         return
 
     successful_notifications = 0
@@ -515,45 +538,65 @@ def send_notifications(connection):
         print(f"Skipped: {email_record['skipped_attachments']}, Failed: {email_record['failed_attachments']}")
         
         try:
-            # 1. Find the original email in inbox
-            original_msg, original_msg_id = find_original_email_by_id(mail, email_id)
-            
-            # 2. Determine recipient emails
+            # 1. Determine recipient emails
             recipient_emails, supporter_name = determine_recipient_emails(email_record, connection)
             
-            # 3. Create notification email
-            notification_msg = create_notification_email(email_record, recipient_emails, supporter_name, original_msg, sender_email, sender_password)
+            # 2. Create notification message
+            notification_message = create_notification_message(email_record, supporter_name)
             
-            if not notification_msg:
-                print(f"Failed to create notification email for: {subject}")
-                update_email_attachments_status(connection, email_id,
-                                               retry_count=email_record['max_retry_count'] + 1,
-                                               error_message="Failed to create notification email",
-                                               error_step='email_creation')
-                failed_notifications += 1
-                continue
+            # 3. Create subject with FW: prefix
+            notification_subject = f"FW: {subject}" if not subject.upper().startswith('FW:') else subject
             
-            # 4. Send the notification email
-            if send_smtp_email(notification_msg, sender_email, sender_password):
+            # 4. Try to find and forward original email, or send new notification
+            original_email = graph_client.find_original_email_by_message_id(email_id)
+            
+            email_sent = False
+            
+            if original_email and original_email.get('id'):
+                # Forward original email with notification comment
+                print(f"Forwarding original email with notification comment")
+                if graph_client.forward_email_with_comment(
+                    original_email['id'], 
+                    recipient_emails, 
+                    notification_message
+                ):
+                    email_sent = True
+                    print(f"Original email forwarded with notification")
+                    
+                    # Mark original as read
+                    graph_client.mark_email_as_read(original_email['id'])
+                else:
+                    print(f"Failed to forward original email, sending notification")
+            
+            # If forwarding failed or original not found, send notification email
+            if not email_sent:
+                print(f"Sending notification email")
+                if graph_client.send_notification_email(
+                    recipient_emails, 
+                    notification_subject, 
+                    notification_message
+                ):
+                    email_sent = True
+                    print(f"Notification email sent successfully")
+                else:
+                    print(f"Failed to send notification email")
+            
+            if email_sent:
                 print(f"Notification sent successfully for: {subject}")
                 print(f"Recipients: {', '.join(recipient_emails)}")
                 
-                # 5. Update database to mark as sent
+                # Update database to mark as sent
                 update_email_attachments_status(connection, email_id,
                                                email_sent='Y',
                                                email_sent_at=datetime.now(),
                                                current_step='completed')
-                
-                # 6. Mark original email as read (or move to folder if supported)
-                if original_msg_id:
-                    move_email_to_folder(mail, original_msg_id, "Processed")
                 
                 successful_notifications += 1
             else:
                 print(f"Failed to send notification for: {subject}")
                 update_email_attachments_status(connection, email_id,
                                                retry_count=email_record['max_retry_count'] + 1,
-                                               error_message="Failed to send notification email",
+                                               error_message="Failed to send notification via Graph API",
                                                error_step='email_sending')
                 failed_notifications += 1
                 
@@ -572,10 +615,6 @@ def send_notifications(connection):
     print(f"Successful: {successful_notifications}")
     print(f"Failed: {failed_notifications}")
     print(f"Total Processed: {successful_notifications + failed_notifications}")
-    
-    # Close email connection
-    mail.close()
-    mail.logout()
 
 def main():
     """Main function"""
@@ -584,14 +623,15 @@ def main():
         print("Failed to connect to database. Exiting.")
         return
     
-    print_and_log("Script 5 started - Email Notifications (Linux)")
+    print_and_log("Script 5 started - Email Notifications using Graph API (Linux)")
     
     try:
         print(f"Using database: {config['Production']['database']} on {config['Production']['server']}")
+        print(f"Using Graph API user: {GRAPH_CONFIG['user_email']}")
         
-        send_notifications(connection)
+        send_notifications_with_graph(connection)
         
-        print_and_log("Script 5 finished - Email notification process completed")
+        print_and_log("Script 5 finished - Email notification process using Graph API completed")
         
     except Exception as e:
         print_and_log(f"Error in main: {e}")

@@ -1,15 +1,118 @@
-#!/usr/bin/env python3
-# email_handler_linux.py
+# email_handler_graph.py
 
-import smtplib
+import requests
+import msal
 import logging
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import time
 from typing import Dict
 import configparser
 
+class GraphEmailSender:
+    """Microsoft Graph API client for sending emails"""
+    
+    def __init__(self, config: configparser.ConfigParser):
+        self.config = config
+        self.access_token = None
+        self.token_expires_at = None
+        self.logger = logging.getLogger(__name__)
+        
+        # Load Graph API configuration
+        try:
+            self.graph_config = {
+                'client_id': config['GraphAPI']['client_id'],
+                'client_secret': config['GraphAPI']['client_secret'],
+                'tenant_id': config['GraphAPI']['tenant_id'],
+                'user_email': config['GraphAPI']['user_email']
+            }
+        except KeyError as e:
+            self.logger.error(f"Missing GraphAPI configuration: {e}")
+            raise ValueError(f"Missing GraphAPI configuration: {e}")
+    
+    def _get_access_token(self) -> str:
+        """Get or refresh access token"""
+        try:
+            if self.access_token and self.token_expires_at:
+                if time.time() < self.token_expires_at - 300:  # 5 min buffer
+                    return self.access_token
+            
+            app = msal.ConfidentialClientApplication(
+                client_id=self.graph_config['client_id'],
+                client_credential=self.graph_config['client_secret'],
+                authority=f"https://login.microsoftonline.com/{self.graph_config['tenant_id']}"
+            )
+            
+            result = app.acquire_token_for_client(
+                scopes=["https://graph.microsoft.com/.default"]
+            )
+            
+            if "access_token" in result:
+                self.access_token = result["access_token"]
+                expires_in = result.get("expires_in", 3600)
+                self.token_expires_at = time.time() + expires_in
+                self.logger.info("Successfully obtained Graph API access token")
+                return self.access_token
+            else:
+                error_msg = result.get('error_description', 'Unknown error')
+                self.logger.error(f"Failed to get access token: {error_msg}")
+                raise Exception(f"Failed to get access token: {error_msg}")
+                
+        except Exception as e:
+            self.logger.error(f"Exception getting access token: {e}")
+            raise
+    
+    def send_email_via_graph(self, to_recipients: list, cc_recipients: list, subject: str, 
+                           html_body: str, plain_body: str) -> bool:
+        """Send email using Graph API"""
+        try:
+            access_token = self._get_access_token()
+            
+            url = f"https://graph.microsoft.com/v1.0/users/{self.graph_config['user_email']}/sendMail"
+            
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json'
+            }
+            
+            # Build recipients list
+            to_recipients_list = [{"emailAddress": {"address": email}} for email in to_recipients]
+            cc_recipients_list = [{"emailAddress": {"address": email}} for email in cc_recipients if email]
+            
+            # Build email message
+            email_message = {
+                "message": {
+                    "subject": subject,
+                    "body": {
+                        "contentType": "HTML",
+                        "content": html_body
+                    },
+                    "toRecipients": to_recipients_list,
+                    "from": {
+                        "emailAddress": {
+                            "address": self.graph_config['user_email']
+                        }
+                    }
+                }
+            }
+            
+            # Add CC recipients if any
+            if cc_recipients_list:
+                email_message["message"]["ccRecipients"] = cc_recipients_list
+            
+            response = requests.post(url, headers=headers, json=email_message)
+            
+            if response.status_code == 202:  # Accepted
+                self.logger.info(f"Email sent successfully via Graph API")
+                return True
+            else:
+                self.logger.error(f"Failed to send email: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Exception sending email via Graph API: {e}")
+            return False
+
 def read_credentials(credentials_file: str) -> tuple:
-    """Read email credentials from file"""
+    """Read email credentials from file (kept for compatibility, not used with Graph API)"""
     try:
         with open(credentials_file, 'r') as file:
             sender_email = file.readline().strip()
@@ -76,8 +179,26 @@ def create_email_body(wpq: Dict, audit: Dict, is_test: bool = False) -> str:
     """
     return html
 
+def create_plain_email_body(wpq: Dict, audit: Dict, is_test: bool = False) -> str:
+    """Create plain text email body"""
+    test_prefix = "[TEST MESSAGE] " if is_test else ""
+    
+    plain_text = f"""
+{test_prefix}SupSol Support: WPQ {wpq['WPQNumber']}
+
+Message: {audit.get('Text', 'No message content')}
+
+English: {audit.get('EnglishText', 'No English translation available')}
+
+Supporter Name: {wpq.get('SupporterName', 'N/A')}
+Supporter Email: {wpq.get('SupporterEmail', 'N/A')}
+
+This is an automated message. Please do not reply directly to this email.
+    """
+    return plain_text
+
 def get_smtp_config(config: configparser.ConfigParser) -> Dict:
-    """Get SMTP configuration from config file"""
+    """Get SMTP configuration from config file (kept for compatibility)"""
     try:
         smtp_config = {
             'server': config['Email'].get('smtp_server', 'smtp.office365.com'),
@@ -95,12 +216,13 @@ def get_smtp_config(config: configparser.ConfigParser) -> Dict:
         }
 
 def send_email(config: configparser.ConfigParser, wpq: Dict, audit: Dict, is_test: bool = False) -> bool:
-    """Send email using SMTP"""
+    """Send email using Graph API (main function - signature unchanged)"""
+    logger = logging.getLogger(__name__)
+    
     try:
-        # Get credentials
-        credentials_file = config['Email']['credentials_file']
-        sender_email, sender_password = read_credentials(credentials_file)
-
+        # Initialize Graph API sender
+        graph_sender = GraphEmailSender(config)
+        
         # Determine recipient and CC
         if is_test:
             recipient_email = wpq.get('SupporterEmail', config['EmailTest']['recipient_email'])
@@ -110,108 +232,56 @@ def send_email(config: configparser.ConfigParser, wpq: Dict, audit: Dict, is_tes
             cc_email = wpq.get('SupporterEmail', '')
 
         if not recipient_email:
-            logging.error(f"Missing recipient email for WPQ {wpq['WPQNumber']}")
+            logger.error(f"Missing recipient email for WPQ {wpq['WPQNumber']}")
             return False
 
-        # Get SMTP configuration
-        smtp_config = get_smtp_config(config)
+        # Prepare recipients lists
+        to_recipients = [recipient_email]
+        cc_recipients = [cc_email] if cc_email else []
 
-        # Create email message
-        msg = MIMEMultipart('alternative')
-        
-        # Set email headers
+        # Create email subject
         subject_prefix = "[TEST] " if is_test else ""
-        msg['Subject'] = f"{subject_prefix}SupSol Support: WPQ {wpq['WPQNumber']}"
-        msg['From'] = sender_email
-        msg['To'] = recipient_email
-        
-        if cc_email:
-            msg['Cc'] = cc_email
+        subject = f"{subject_prefix}SupSol Support: WPQ {wpq['WPQNumber']}"
 
-        # Create HTML body
+        # Create email bodies
         html_body = create_email_body(wpq, audit, is_test)
-        
-        # Create plain text version as fallback
-        plain_text = f"""
-SupSol Support: WPQ {wpq['WPQNumber']}
+        plain_body = create_plain_email_body(wpq, audit, is_test)
 
-{"[TEST MESSAGE] " if is_test else ""}
+        # Send email via Graph API
+        success = graph_sender.send_email_via_graph(
+            to_recipients=to_recipients,
+            cc_recipients=cc_recipients,
+            subject=subject,
+            html_body=html_body,
+            plain_body=plain_body
+        )
 
-Message: {audit.get('Text', 'No message content')}
-
-English: {audit.get('EnglishText', 'No English translation available')}
-
-Supporter Name: {wpq.get('SupporterName', 'N/A')}
-Supporter Email: {wpq.get('SupporterEmail', 'N/A')}
-
-This is an automated message. Please do not reply directly to this email.
-        """
-
-        # Attach both plain text and HTML versions
-        part1 = MIMEText(plain_text, 'plain')
-        part2 = MIMEText(html_body, 'html')
-        
-        msg.attach(part1)
-        msg.attach(part2)
-
-        # Connect to SMTP server and send email
-        with smtplib.SMTP(smtp_config['server'], smtp_config['port']) as server:
-            if smtp_config['use_tls']:
-                server.starttls()
-            
-            server.login(sender_email, sender_password)
-            
-            # Prepare recipient list
-            recipients = [recipient_email]
+        if success:
+            mode = "TEST MODE" if is_test else "PRODUCTION"
+            logger.info(f"Email sent successfully ({mode}) for WPQ {wpq['WPQNumber']} to {recipient_email}")
             if cc_email:
-                recipients.append(cc_email)
-            
-            # Send email
-            text = msg.as_string()
-            server.sendmail(sender_email, recipients, text)
-
-        mode = "TEST MODE" if is_test else "PRODUCTION"
-        logging.info(f"Email sent successfully ({mode}) for WPQ {wpq['WPQNumber']} to {recipient_email}")
-        if cc_email:
-            logging.info(f"CC sent to: {cc_email}")
+                logger.info(f"CC sent to: {cc_email}")
         
-        return True
+        return success
 
-    except smtplib.SMTPAuthenticationError as e:
-        logging.error(f"SMTP Authentication failed for WPQ {wpq['WPQNumber']}: {e}")
-        return False
-    except smtplib.SMTPException as e:
-        logging.error(f"SMTP error for WPQ {wpq['WPQNumber']}: {e}")
-        return False
     except Exception as e:
-        logging.error(f"Failed to send email for WPQ {wpq['WPQNumber']}: {e}")
+        logger.error(f"Failed to send email for WPQ {wpq['WPQNumber']}: {e}")
         return False
 
 def validate_email_config(config: configparser.ConfigParser) -> bool:
-    """Validate email configuration"""
+    """Validate email configuration (updated for Graph API)"""
     try:
         # Check required sections
-        if 'Email' not in config or 'EmailTest' not in config:
-            logging.error("Missing Email or EmailTest sections in configuration")
+        if 'GraphAPI' not in config or 'EmailTest' not in config:
+            logging.error("Missing GraphAPI or EmailTest sections in configuration")
             return False
 
-        # Check required fields in Email section
-        email_fields = ['credentials_file']
-        for field in email_fields:
-            if field not in config['Email']:
-                logging.error(f"Missing {field} in Email configuration")
+        # Check required fields in GraphAPI section
+        graph_fields = ['client_id', 'client_secret', 'tenant_id', 'user_email']
+        for field in graph_fields:
+            if field not in config['GraphAPI']:
+                logging.error(f"Missing {field} in GraphAPI configuration")
                 return False
-
-        # Check if credentials file exists and is readable
-        credentials_file = config['Email']['credentials_file']
-        try:
-            sender_email, sender_password = read_credentials(credentials_file)
-            if not sender_email or not sender_password:
-                logging.error("Invalid or empty credentials in credentials file")
-                return False
-        except Exception as e:
-            logging.error(f"Cannot read credentials file: {e}")
-            return False
 
         # Check EmailTest section
         if 'recipient_email' not in config['EmailTest']:
@@ -226,20 +296,21 @@ def validate_email_config(config: configparser.ConfigParser) -> bool:
         return False
 
 def test_smtp_connection(config: configparser.ConfigParser) -> bool:
-    """Test SMTP connection"""
+    """Test Graph API connection (replaces SMTP test)"""
+    logger = logging.getLogger(__name__)
+    
     try:
-        credentials_file = config['Email']['credentials_file']
-        sender_email, sender_password = read_credentials(credentials_file)
-        smtp_config = get_smtp_config(config)
-
-        with smtplib.SMTP(smtp_config['server'], smtp_config['port']) as server:
-            if smtp_config['use_tls']:
-                server.starttls()
-            
-            server.login(sender_email, sender_password)
-            logging.info("SMTP connection test successful")
+        graph_sender = GraphEmailSender(config)
+        # Test by getting access token
+        access_token = graph_sender._get_access_token()
+        
+        if access_token:
+            logger.info("Graph API connection test successful")
             return True
+        else:
+            logger.error("Graph API connection test failed")
+            return False
 
     except Exception as e:
-        logging.error(f"SMTP connection test failed: {e}")
+        logger.error(f"Graph API connection test failed: {e}")
         return False

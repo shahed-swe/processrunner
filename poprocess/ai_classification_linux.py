@@ -209,9 +209,10 @@ def classify_content_with_chatgpt(text_content, filename, processing_method):
     """Classify the content of a text using ChatGPT"""
     try:
         openai.api_key = OPENAI_API_KEY
-
+        print("Before calling openai .ChatCompletion.create")
         # Create enhanced prompt
         prompt = create_enhanced_classification_prompt(text_content, filename, processing_method)
+        print(prompt)
 
         # Send the message to ChatGPT using GPT-4
         response = openai.ChatCompletion.create(
@@ -324,6 +325,8 @@ def process_attachment_classification(connection):
 
     # Counter to track API requests for rate limiting
     request_counter = 0
+    print("Attachments to classify:")
+    print(attachments_to_classify)
     
     for attachment_record in attachments_to_classify:
         email_id = attachment_record['email_id']
@@ -358,13 +361,35 @@ def process_attachment_classification(connection):
                 file_content = file.read()
             
             # Check if file has meaningful content
-            if len(file_content.strip()) < 100:
+            if len(file_content.strip()) < 50:
                 print(f"File has insufficient content for classification: {translated_file_name}")
-                update_attachment_status(connection, email_id, attachment_sequence,
-                                        error_message="Insufficient text content for classification",
-                                        error_step='content_validation',
-                                        retry_count=attachment_record['retry_count'] + 1)
-                continue
+                print(f"Content length: {len(file_content.strip())} characters")
+                
+                # If it's a Purchase Order based on filename, classify it directly
+                if "purchase order" in original_file_name.lower() or "po" in original_file_name.lower():
+                    print(f"Classifying based on filename as Purchase Order: {original_file_name}")
+                    
+                    # Move the file to PO folder
+                    new_file_path = move_file_to_destination(translated_file_path, PO_FOLDER, translated_file_name)
+                    
+                    # Update database with filename-based classification
+                    update_attachment_status(connection, email_id, attachment_sequence,
+                                           ai_classified='Y',
+                                           ai_classified_at=datetime.now(),
+                                           classification_result='Purchase Order',
+                                           classification_confidence='High',
+                                           translated_file_path=new_file_path,
+                                           current_step='api_processing',
+                                           notes='Classified based on filename due to insufficient text content')
+                    
+                    print(f"Successfully classified attachment {attachment_sequence} based on filename: {translated_file_name}")
+                    continue
+                else:
+                    update_attachment_status(connection, email_id, attachment_sequence,
+                                            error_message="Insufficient text content for classification",
+                                            error_step='content_validation',
+                                            retry_count=attachment_record['retry_count'] + 1)
+                    continue
 
             # Classify the content using ChatGPT
             print(f"Sending to AI for classification...")
